@@ -8,14 +8,16 @@ const Statistics = ({ good, neutral, bad }) => {
   if (!all) return <p>No feedbak given</p>
 
   return (
-    <div>
-      <StatisticLine value={good} text="good" />
-      <StatisticLine value={neutral} text="neutral" />
-      <StatisticLine value={bad} text="bad" />
-      <StatisticLine value={all} text="all" />
-      <StatisticLine value={average} text="average" />
-      <StatisticLine value={positive} text="positive" unit="%"/>
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine value={good} text="good" />
+        <StatisticLine value={neutral} text="neutral" />
+        <StatisticLine value={bad} text="bad" />
+        <StatisticLine value={all} text="all" />
+        <StatisticLine value={average} text="average" />
+        <StatisticLine value={positive} text="positive" unit="%"/>
+      </tbody>
+    </table>
   )
 }
 
@@ -24,7 +26,11 @@ const Button = ({ text, onClick }) => (
 )
 
 const StatisticLine = ({ text, value, unit }) => (
-  <p>{text} {value} {unit}</p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+    <td>{unit}</td>
+  </tr>
 )
 
 function App() {
