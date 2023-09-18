@@ -9,6 +9,13 @@ function App() {
   ])
   const [name, setName] = useState('')
   const [number, setNumber] = useState('')
+  const [query, setQuery] = useState('')
+
+  const filteredPersons = persons.filter(p => {
+    const pName = p.name.toLowerCase()
+    const q = query.toLowerCase()
+    return pName.includes(q)
+  })
 
   const addName = e => {
     e.preventDefault()
@@ -25,7 +32,11 @@ function App() {
   return (
     <>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with <input value={query} onChange={e => setQuery(e.target.value)} />
+      </div>
 
+      <h2>add a new</h2>
       <form onSubmit={addName}>
         <div>
           name <input value={name} onChange={e => setName(e.target.value)} />
@@ -39,7 +50,7 @@ function App() {
       </form>
 
       <h2>Numbers</h2>
-      {persons.map(p => <div key={p.name}>{p.name} {p.number}</div>)}
+      {filteredPersons.map(p => <div key={p.name}>{p.name} {p.number}</div>)}
     </>
   )
 }
