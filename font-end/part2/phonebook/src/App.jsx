@@ -25,7 +25,7 @@ function App() {
     return pName.includes(q)
   })
 
-  const addName = e => {
+  const addPerson = e => {
     e.preventDefault()
 
     if (persons.find(p => p.name === name)) {
@@ -41,6 +41,16 @@ function App() {
     }
   }
 
+  const remove = person => {
+    if (confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(person.id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -48,7 +58,7 @@ function App() {
 
       <h3>add a new</h3>
       <AddForm
-        onSubmit={addName}
+        onSubmit={addPerson}
         name={name}
         onNameChange={e => setName(e.target.value)}
         number={number}
@@ -56,7 +66,7 @@ function App() {
       />
 
       <h3>Numbers</h3>
-      <PersonList persons={filteredPersons} />
+      <PersonList persons={filteredPersons} onRemove={remove} />
     </>
   )
 }
