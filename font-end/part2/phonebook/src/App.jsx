@@ -6,12 +6,15 @@ import personService from './services/persons'
 import SearchFilter from './components/SearchFilter'
 import AddForm from './components/AddForm'
 import PersonList from './components/PersonList'
+import Notification from './components/Nofitication'
 
 function App() {
   const [persons, setPersons] = useState([])
   const [name, setName] = useState('')
   const [number, setNumber] = useState('')
   const [query, setQuery] = useState('')
+  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState('')
 
   useEffect(() => {
     personService
@@ -25,6 +28,15 @@ function App() {
     return pName.includes(q)
   })
 
+  const notify = (message, status) => {
+    setMessage(message)
+    setStatus(status)
+    setTimeout(() => {
+      setMessage('')
+      setStatus('')
+    }, 2000)
+  }
+
   const addPerson = e => {
     e.preventDefault()
 
@@ -37,6 +49,7 @@ function App() {
             setPersons(persons.map(p => p.name !== name ? p : data))
             setName('')
             setNumber('')
+            notify(`Updated ${data.name}'s number`, 'success')
           })
       }
     } else {
@@ -46,6 +59,7 @@ function App() {
           setPersons(persons.concat(data))
           setName('')
           setNumber('')
+          notify(`Added ${data.name}`, 'success')
         })
     }
   }
@@ -56,6 +70,7 @@ function App() {
         .remove(person.id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== person.id))
+          notify(`Removed ${person.name}`, 'success')
         })
     }
   }
@@ -63,6 +78,7 @@ function App() {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={message} status={status} />
       <SearchFilter value={query} onChange={e => setQuery(e.target.value)} />
 
       <h3>add a new</h3>
