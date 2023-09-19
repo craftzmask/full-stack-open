@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
   { 
     "id": 1,
@@ -24,21 +26,30 @@ let persons = [
   }
 ]
 
-app.get('/api/persons', (req, res) => {
+const baseUrl = '/api/persons'
+
+app.get(baseUrl, (req, res) => {
   res.json(persons)
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get(`${baseUrl}/:id`, (req, res) => {
   const id = Number(req.params.id)
   const found = persons.find(p => p.id === id)
   if (!found) return res.status(404).end()
-  return res.json(found)
+  res.json(found)
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.post(baseUrl, (req, res) => {
+  const person = req.body
+  person.id = Math.floor(Math.random() * 1000000)
+  persons = persons.concat(person)
+  res.json(person)
+})
+
+app.delete(`${baseUrl}/:id`, (req, res) => {
   const id = Number(req.params.id)
   persons = persons.filter(p => p.id !== id)
-  return res.status(204).json(persons)
+  res.status(204).json(persons)
 })
 
 app.get('/info', (req, res) => {
