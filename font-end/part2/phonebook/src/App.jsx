@@ -51,6 +51,10 @@ function App() {
             setNumber('')
             notify(`Updated ${data.name}'s number`, 'success')
           })
+          .catch(err => {
+            setPersons(persons.filter(p => p.name !== found.name))
+            notify(`Information of ${found.name} has already been removed from server`, 'error')
+          })
       }
     } else {
       personService
