@@ -41,6 +41,19 @@ app.get(`${baseUrl}/:id`, (req, res) => {
 
 app.post(baseUrl, (req, res) => {
   const person = req.body
+  
+  if (!(person.name && person.number)) {
+    return res.status(400).json({
+      error: 'name or number missing'
+    })
+  }
+
+  if (persons.find(p => p.name === person.name)) {
+    return res.status(400).json({
+      error: 'The name already exists in the phonebook'
+    })
+  }
+
   person.id = Math.floor(Math.random() * 1000000)
   persons = persons.concat(person)
   res.json(person)
