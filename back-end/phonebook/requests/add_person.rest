@@ -5,3 +5,12 @@ Content-Type: application/json
   "name": "Hello World", 
   "number": "123-123456"
 }
+
+### try to add invalid numbers will fail
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{ 
+  "name": "Hello World", 
+  "number": "1-1234556"
+}
