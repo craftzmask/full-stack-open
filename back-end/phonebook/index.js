@@ -37,9 +37,9 @@ app.post(baseUrl, (req, res) => {
 })
 
 app.delete(`${baseUrl}/:id`, (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(p => p.id !== id)
-  res.status(204).json(persons)
+  Person.findByIdAndRemove(req.params.id)
+    .then(() => res.status(204).end())
+    .catch(err => console.error('error: ', err.message))
 })
 
 app.get('/info', (req, res) => {
