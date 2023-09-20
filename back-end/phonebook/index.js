@@ -36,10 +36,11 @@ app.post(baseUrl, (req, res) => {
   person.save().then(data => res.json(data))
 })
 
-app.delete(`${baseUrl}/:id`, (req, res) => {
-  Person.findByIdAndRemove(req.params.id)
+app.delete(`${baseUrl}/:id`, (req, res, next) => {
+  Person
+    .findByIdAndRemove(req.params.id)
     .then(() => res.status(204).end())
-    .catch(err => console.error('error: ', err.message))
+    .catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
@@ -47,6 +48,17 @@ app.get('/info', (req, res) => {
     <p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date()}</p>
   `)
+})
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(err)
 })
 
 const PORT = process.env.PORT || 3001
