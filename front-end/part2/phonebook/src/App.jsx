@@ -65,6 +65,7 @@ function App() {
           setNumber('')
           notify(`Added ${data.name}`, 'success')
         })
+        .catch(err => notify(err.response.data.err, 'error'))
     }
   }
 

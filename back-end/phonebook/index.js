@@ -37,14 +37,21 @@ app.get(`${baseUrl}/:id`, (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.post(baseUrl, (req, res) => {
+app.post(baseUrl, (req, res, next) => {
   const person = new Person(req.body)
-  person.save().then(data => res.json(data))
+  person
+    .save()
+    .then(data => res.json(data))
+    .catch(err => next(err))
 })
 
 app.put(`${baseUrl}/:id`, (req, res, next) => {
   Person
-    .findByIdAndUpdate(req.params.id, { number: req.body.number }, { new: true })
+    .findByIdAndUpdate(
+      req.params.id,
+      { number: req.body.number },
+      { new: true, runValidators: true, context: 'query' }
+    )
     .then(data => res.json(data))
     .catch(err => next(err))
 })
@@ -70,7 +77,9 @@ app.use((err, req, res, next) => {
   console.error(err.message)
 
   if (err.name === 'CastError') {
-    return res.status(400).send({ error: 'malformatted id' })
+    return res.status(400).send({ err: 'malformatted id' })
+  } else if (err.name === 'ValidationError') {
+    return res.status(400).send({ err: err.message })
   }
 
   next(err)
