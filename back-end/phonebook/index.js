@@ -24,11 +24,17 @@ app.get(baseUrl, (req, res) => {
     .then(data => res.json(data))
 })
 
-app.get(`${baseUrl}/:id`, (req, res) => {
-  const id = Number(req.params.id)
-  const found = persons.find(p => p.id === id)
-  if (!found) return res.status(404).end()
-  res.json(found)
+app.get(`${baseUrl}/:id`, (req, res, next) => {
+  Person
+    .findById(req.params.id)
+    .then(data => {
+      if (data) {
+        res.json(data)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(err => next(err))
 })
 
 app.post(baseUrl, (req, res) => {
@@ -51,10 +57,12 @@ app.delete(`${baseUrl}/:id`, (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-  res.send(`
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date()}</p>
-  `)
+  Person.find({}).then(data => {
+    res.send(`
+      <p>Phonebook has info for ${data.length} people</p>
+      <p>${new Date()}</p>
+    `)
+  })
 })
 
 // Error handler
