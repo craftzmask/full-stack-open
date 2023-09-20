@@ -36,6 +36,13 @@ app.post(baseUrl, (req, res) => {
   person.save().then(data => res.json(data))
 })
 
+app.put(`${baseUrl}/:id`, (req, res, next) => {
+  Person
+    .findByIdAndUpdate(req.params.id, { number: req.body.number }, { new: true })
+    .then(data => res.json(data))
+    .catch(err => next(err))
+})
+
 app.delete(`${baseUrl}/:id`, (req, res, next) => {
   Person
     .findByIdAndRemove(req.params.id)
