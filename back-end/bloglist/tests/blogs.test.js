@@ -93,6 +93,20 @@ test('a valid blog can be posted', async () => {
   expect(titles).toContain('Type wars')
 })
 
+test('a blog will default to 0 if likes property is missing', async () => {
+  const res = await api
+    .post('/api/blogs')
+    .send({
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    })
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+  expect(res.body.likes).toBe(0)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
