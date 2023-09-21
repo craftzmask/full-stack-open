@@ -64,8 +64,33 @@ describe('total likes', () => {
     expect(result).toBe(5)
   })
 
-  test('when list has only one blog equals the likes of that', () => {
+  test('when list has many blogs must calculate right', () => {
     const result = listHelper.totalLikes(blogs)
     expect(result).toBe(36)
+  })
+})
+
+describe('favorite blog', () => {
+  test('of empty list is null', () => {
+    const result = listHelper.favoriteBlog([])
+    expect(result).toEqual(null)
+  })
+
+  test('when list has only one blog equals to that blog', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    expect(result).toEqual({
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      likes: 5,
+    })
+  })
+
+  test('when list has many blogs must calculate right', () => {
+    const result = listHelper.favoriteBlog(blogs)
+    expect(result).toEqual({
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      likes: 12
+    })
   })
 })
