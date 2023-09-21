@@ -44,6 +44,11 @@ const blogs = [
   }  
 ]
 
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   const blogObjects = blogs.map(blog => new Blog(blog))
@@ -67,6 +72,25 @@ test('every blog should have id instead of _id', async () => {
     .expect('Content-Type', /application\/json/)
 
   res.body.map(blog => expect(blog.id).toBeDefined())
+})
+
+test('a valid blog can be posted', async () => {
+  const res = await api
+    .post('/api/blogs')
+    .send({
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      likes: 2,
+    })
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await blogsInDb()
+  expect(blogsAtEnd.length).toBe(blogs.length + 1)
+
+  const titles = blogsAtEnd.map(b => b.title)
+  expect(titles).toContain('Type wars')
 })
 
 afterAll(async () => {
