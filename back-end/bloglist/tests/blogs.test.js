@@ -107,6 +107,25 @@ test('a blog will default to 0 if likes property is missing', async () => {
   expect(res.body.likes).toBe(0)
 })
 
+test('cannot not post a blog without title or url', async () => {
+  await api
+    .post('/api/blogs')
+    .send({
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    })
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send({
+      title: "Type wars",
+      author: "Robert C. Martin",
+    })
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
