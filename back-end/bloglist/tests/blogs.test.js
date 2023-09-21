@@ -60,6 +60,15 @@ test('blogs are returned as json', async () => {
   expect(res.body.length).toBe(blogs.length)
 })
 
+test('every blog should have id instead of _id', async () => {
+  const res = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  res.body.map(blog => expect(blog.id).toBeDefined())
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
