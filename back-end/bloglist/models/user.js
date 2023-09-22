@@ -12,7 +12,13 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: [true, 'expected password must be provided']
-  }
+  },
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ]
 })
 
 userSchema.plugin(uniqueValidator)
