@@ -49,11 +49,21 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+let token = null
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   const blogObjects = blogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
+
+  let res = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'root' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  
+  token = res.body.token
 })
 
 test('blogs are returned as json', async () => {
@@ -77,6 +87,7 @@ test('every blog should have id instead of _id', async () => {
 test('a valid blog can be posted', async () => {
   const res = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send({
       title: "Type wars",
       author: "Robert C. Martin",
@@ -96,6 +107,7 @@ test('a valid blog can be posted', async () => {
 test('a blog will default to 0 if likes property is missing', async () => {
   const res = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send({
       title: "Type wars",
       author: "Robert C. Martin",
@@ -110,6 +122,7 @@ test('a blog will default to 0 if likes property is missing', async () => {
 test('cannot not post a blog without title or url', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send({
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
@@ -118,6 +131,7 @@ test('cannot not post a blog without title or url', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send({
       title: "Type wars",
       author: "Robert C. Martin",
@@ -128,14 +142,30 @@ test('cannot not post a blog without title or url', async () => {
 
 test("delete a blog by providing it's valid id", async () => {
   const blogsAtStart = await blogsInDb()
-  const blogToDelete = blogsAtStart[0]
+
+  const res = await api
+    .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      title: 'Go To Statement Considered Harmful P2',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5
+    })
+    .expect(201)
+  
+  let blogsAtEnd = await blogsInDb()
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1)
+
+  const blogToDelete = res.body
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
-  const blogsAtEnd = await blogsInDb()
-  expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+  blogsAtEnd = await blogsInDb()
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
 
   const titles = blogsAtEnd.map(blog => blog.title)
   expect(titles).not.toContain(blogToDelete.title)

@@ -12,7 +12,7 @@ blogsRouter.get('/', async (req, res) => {
 
 blogsRouter.post('/', userExtractor,  async (req, res) => {
   const user = req.user
-  
+
   const blog = new Blog({
     ...req.body,
     user: user._id
