@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const App = () => {
   const logout = () => {
     window.localStorage.removeItem('user')
     setUser(null)
-    notify("Goodbye", 'success')
+    notify('Goodbye', 'success')
   }
 
   const addBlog = async newBlog => {
@@ -84,7 +84,7 @@ const App = () => {
       }
     }
   }
- 
+
   const notify = (message, status) => {
     setMessage(message)
     setStatus(status)

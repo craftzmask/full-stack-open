@@ -14,7 +14,7 @@ const Blog = ({ blog, user, likeClick, removeClick }) => {
   const like = async () => {
     const { user, ...updatedBlog } = blog
     await likeClick(
-      blog.id, 
+      blog.id,
       { ...updatedBlog, likes: updatedBlog.likes + 1 }
     )
   }
@@ -33,9 +33,9 @@ const Blog = ({ blog, user, likeClick, removeClick }) => {
       <p>{blog.user?.username}</p>
       {
         blog.user?.username === user.username
-          ? <button onClick={remove}>remove</button> 
+          ? <button onClick={remove}>remove</button>
           : null
-        }
+      }
     </div>
   )
 
@@ -47,7 +47,7 @@ const Blog = ({ blog, user, likeClick, removeClick }) => {
       </button>
 
       {visible && showDetail()}
-    </div>  
+    </div>
   )
 }
 export default Blog
