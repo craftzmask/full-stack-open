@@ -16,6 +16,8 @@ const App = () => {
   const [status, setStatus] = useState('')
   const blogFormRef = useRef()
 
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -104,7 +106,7 @@ const App = () => {
         <CreateBlogForm addBlog={addBlog} />
       </Togglable>
 
-      <BlogList blogs={blogs} likeClick={likeBlog} />
+      <BlogList blogs={sortedBlogs} likeClick={likeBlog} />
     </div>
   )
 }
