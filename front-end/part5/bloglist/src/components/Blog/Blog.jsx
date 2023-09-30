@@ -24,7 +24,7 @@ const Blog = ({ blog, user, likeClick, removeClick }) => {
   }
 
   const showDetail = () => (
-    <div>
+    <div className='blogDetails'>
       <p>{blog.url}</p>
       <p>
         likes {blog.likes}
@@ -42,7 +42,7 @@ const Blog = ({ blog, user, likeClick, removeClick }) => {
   return (
     <div className='blog' style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={() => setVisible(!visible)}>
+      <button className='toggleButton' onClick={() => setVisible(!visible)}>
         {visible ? 'hide' : 'view'}
       </button>
 
