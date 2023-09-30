@@ -1,9 +1,15 @@
 import Blog from './Blog'
 
-const BlogList = ({ blogs, likeClick }) => (
+const BlogList = ({ blogs, user, likeClick, removeClick }) => (
   <div>
     {
-      blogs.map(blog => <Blog key={blog.id} blog={blog} likeClick={likeClick} />)
+      blogs.map(blog => <Blog
+        key={blog.id}
+        blog={blog}
+        user={user}
+        likeClick={likeClick}
+        removeClick={removeClick}
+      />)
     }
   </div>
 )

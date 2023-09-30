@@ -73,6 +73,18 @@ const App = () => {
     }
   }
 
+  const removeBlog = async blog => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        notify(`Removed blog ${blog.title} by ${blog.author} successfully`, 'success')
+      } catch (exception) {
+        notify(exception.response.data.err, 'error')
+      }
+    }
+  }
+ 
   const notify = (message, status) => {
     setMessage(message)
     setStatus(status)
@@ -106,7 +118,12 @@ const App = () => {
         <CreateBlogForm addBlog={addBlog} />
       </Togglable>
 
-      <BlogList blogs={sortedBlogs} likeClick={likeBlog} />
+      <BlogList
+        blogs={sortedBlogs}
+        user={user}
+        likeClick={likeBlog}
+        removeClick={removeBlog}
+      />
     </div>
   )
 }
