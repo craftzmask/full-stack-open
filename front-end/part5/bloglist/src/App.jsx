@@ -106,7 +106,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h2 id="blogs">blogs</h2>
       <Notification message={message} status={status} />
 
       <p>
