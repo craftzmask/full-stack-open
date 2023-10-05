@@ -1,7 +1,7 @@
 import Blog from './Blog/Blog'
 
 const BlogList = ({ blogs, user, likeClick, removeClick }) => (
-  <div>
+  <div id="bloglist">
     {
       blogs.map(blog => <Blog
         key={blog.id}

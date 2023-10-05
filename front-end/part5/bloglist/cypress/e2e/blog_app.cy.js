@@ -56,13 +56,21 @@ describe('Blog App', function() {
     })
 
     it('a user can like a blog', function() {
-      cy.login({ username: 'root', password: 'root' })
       cy.createBlog(blog)
       cy.contains(blog.title)
 
       cy.get('.toggleButton').click()
       cy.get('.likeButton').click()
       cy.contains('likes 1')
+    })
+
+    it.only('a user can delete their blogs', function() {
+      cy.createBlog(blog)
+      cy.contains(blog.title)
+      cy.get('.toggleButton').click()
+      cy.get('#remove-button').click()
+      cy.wait(2000)
+      cy.get('#bloglist').should('not.contain', blog.title)
     })
   })
 })
