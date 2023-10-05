@@ -41,7 +41,13 @@ describe('Blog App', function() {
 
   describe('when logged in', function() {
     const blog = {
-      title: 'This is a title',
+      title: 'second liked',
+      author: 'This is an author',
+      url: 'This is a url'
+    }
+
+    const blog1 = {
+      title: 'most liked',
       author: 'This is an author',
       url: 'This is a url'
     }
@@ -78,7 +84,7 @@ describe('Blog App', function() {
       cy.get('#bloglist').should('not.contain', blog.title)
     })
 
-    it.only('only user can see the remove button', function() {
+    it('only user can see the remove button', function() {
       cy.createBlog(blog)
       cy.contains(blog.title)
       cy.get('.toggleButton').click()
@@ -89,6 +95,24 @@ describe('Blog App', function() {
       cy.get('.toggleButton').click()
       
       cy.contains('remove').should('not.exist')
+    })
+
+    it('most liked blog will be the top', function() {
+      cy.createBlog(blog)
+      cy.createBlog(blog1)
+
+      cy.get('.blog').eq(0).should('contain', blog.title)
+      cy.get('.blog').eq(1).should('contain', blog1.title)
+
+      cy.get('.toggleButton').eq(1).click()
+
+      cy.get('.likeButton').click()
+      cy.wait(1000)
+
+      cy.get('.likeButton').click()
+      cy.wait(1000)
+
+      cy.get('.blog').eq(0).should('contain', blog1.title)
     })
   })
 })
