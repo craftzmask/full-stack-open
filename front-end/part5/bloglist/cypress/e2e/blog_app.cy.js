@@ -1,12 +1,17 @@
 describe('Blog App', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.request('POST', 'http://localhost:3003/api/users', {
       name: 'Matti Luukkainen',
       username: 'root',
       password: 'root'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    })
+    cy.request('POST', 'http://localhost:3003/api/users', {
+      name: 'John Luukkainen',
+      username: 'admin',
+      password: 'admin'
+    })
+
     cy.visit('http://localhost:5173')
   })
 
@@ -64,13 +69,26 @@ describe('Blog App', function() {
       cy.contains('likes 1')
     })
 
-    it.only('a user can delete their blogs', function() {
+    it('a user can delete their blogs', function() {
       cy.createBlog(blog)
       cy.contains(blog.title)
       cy.get('.toggleButton').click()
       cy.get('#remove-button').click()
       cy.wait(2000)
       cy.get('#bloglist').should('not.contain', blog.title)
+    })
+
+    it.only('only user can see the remove button', function() {
+      cy.createBlog(blog)
+      cy.contains(blog.title)
+      cy.get('.toggleButton').click()
+      cy.contains('remove').should('exist')
+      cy.get('#logout').click()
+
+      cy.login({ username: 'admin', password: 'admin' })
+      cy.get('.toggleButton').click()
+      
+      cy.contains('remove').should('not.exist')
     })
   })
 })
