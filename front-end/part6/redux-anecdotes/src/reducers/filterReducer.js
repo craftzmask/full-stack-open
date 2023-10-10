@@ -7,7 +7,6 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     filterChange(state, action) {
-      console.log('did i go here')
       return action.payload
     }
   }
