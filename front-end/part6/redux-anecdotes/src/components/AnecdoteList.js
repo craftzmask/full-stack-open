@@ -16,7 +16,7 @@ const AnecdoteList = () => {
   const sortedAnecdotes = anecdotes.sort((a, b) => a.votes - b.votes)
 
   const handleClick = anecdote => {
-    dispatch(voteAnecdote(anecdote.id))
+    dispatch(voteAnecdote(anecdote))
     dispatch(showNotification(`You voted ${anecdote.content}`))
     setTimeout(() => {
       dispatch(removeNotification())
