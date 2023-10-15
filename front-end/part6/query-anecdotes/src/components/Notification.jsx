@@ -2,7 +2,7 @@ import { useNotifcationValue } from '../NotificationContext'
 
 const Notification = () => {
   const message = useNotifcationValue()
-
+  
   const style = {
     border: 'solid',
     padding: 10,

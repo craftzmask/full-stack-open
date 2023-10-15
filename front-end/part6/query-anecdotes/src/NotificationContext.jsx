@@ -31,4 +31,4 @@ export const useNotificationDispatch = () => {
   return useContext(NotificationContext)[1]
 }
 
-export default NotificationContextProvider
+export default NotificationContext
