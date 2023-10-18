@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -9,11 +10,12 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 
+import { notify } from './reducers/notificationReducer'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
-  const [status, setStatus] = useState('')
+  const dispatch = useDispatch()
   const blogFormRef = useRef()
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
@@ -39,16 +41,16 @@ const App = () => {
       window.localStorage.setItem('user', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      notify(`Welcome back ${user.username}!`, 'success')
+      dispatch(notify(`Welcome back ${user.username}!`, 'success'))
     } catch (exception) {
-      notify(exception.response.data.err, 'error')
+      dispatch(notify(exception.response.data.err, 'error'))
     }
   }
 
   const logout = () => {
     window.localStorage.removeItem('user')
     setUser(null)
-    notify('Goodbye', 'success')
+    dispatch(notify('Goodbye', 'success'))
   }
 
   const addBlog = async newBlog => {
@@ -85,20 +87,11 @@ const App = () => {
     }
   }
 
-  const notify = (message, status) => {
-    setMessage(message)
-    setStatus(status)
-    setTimeout(() => {
-      setMessage('')
-      setStatus('')
-    }, 2000)
-  }
-
   if (!user) {
     return (
       <>
         <h2>log in to application</h2>
-        <Notification message={message} status={status} />
+        <Notification />
         <LoginForm login={login} />
       </>
     )
@@ -107,7 +100,7 @@ const App = () => {
   return (
     <div>
       <h2 id="blogs">blogs</h2>
-      <Notification message={message} status={status} />
+      <Notification />
 
       <p>
         {user.username} logged in

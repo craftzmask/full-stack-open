@@ -1,6 +1,11 @@
 import './Notification.css'
 
-const Notification = ({ message, status }) => {
+import { selectNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
+
+const Notification = () => {
+  const { message, status } = useSelector(selectNotification)
+
   if (!message) return null
 
   return (
