@@ -1,3 +1,4 @@
+import blogService from '../services/blogs'
 import { createSlice } from '@reduxjs/toolkit'
 
 const blogSlide = createSlice({
@@ -7,13 +8,39 @@ const blogSlide = createSlice({
     setBlogs: (state, action) => {
       return action.payload
     },
+    like: (state, action) => {
+      const id = action.payload.id
+      return state.map(s => s.id !== id ? s : action.payload)
+    },
     createBlog: (state, action) => {
       state.push(action.payload)
+    },
+    deleteBlog: (state, action) => {
+      const id = action.payload
+      return state.filter(s => s.id !== id)
     }
   }
 })
 
-export const { setBlogs, createBlog } = blogSlide.actions
+export const { setBlogs, createBlog, deleteBlog, like } = blogSlide.actions
+
+export const likeBLog = blog => {
+  return async dispatch => {
+    const { user, ...rest } = blog
+    const blogToLike = await blogService.update(
+      { ...rest, likes: rest.likes + 1 }
+    )
+    blogToLike.user = user
+    dispatch(like(blogToLike))
+  }
+}
+
+export const removeBlog = id => {
+  return async dispatch => {
+    await blogService.remove(id)
+    dispatch(deleteBlog(id))
+  }
+}
 
 export const selectBlogs = state => state.blogs
 
