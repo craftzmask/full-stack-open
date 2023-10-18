@@ -21,7 +21,6 @@ export const notificationSlide = createSlice({
 export const { setNotification, clearNotification } = notificationSlide.actions
 
 export const notify = (message, status, seconds = 5) => dispatch => {
-  console.log('notify called')
   dispatch(setNotification({ message, status }))
   setTimeout(() => {
     dispatch(clearNotification())

@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import blogService from './services/blogs'
-import loginService from './services/login'
 
 import CreateBlogForm from './components/CreateBlogForm/CreateBlogForm'
 import Notification from './components/Notification'
@@ -11,9 +10,10 @@ import BlogList from './components/BlogList'
 
 import { notify } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
+import { selectUser, setUser, clearUser } from './reducers/userReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -26,49 +26,15 @@ const App = () => {
     const loggedUser = window.localStorage.getItem('user')
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
 
-  const login = async userObject => {
-    try {
-      const user = await loginService.login(userObject)
-      window.localStorage.setItem('user', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      dispatch(notify(`Welcome back ${user.username}!`, 'success'))
-    } catch (exception) {
-      dispatch(notify(exception.response.data.err, 'error'))
-    }
-  }
-
   const logout = () => {
     window.localStorage.removeItem('user')
-    setUser(null)
+    dispatch(clearUser())
     dispatch(notify('Goodbye', 'success'))
-  }
-
-  const likeBlog = async (id, updatedBlog) => {
-    try {
-      const blog = await blogService.update(id, updatedBlog)
-      blog.user = user
-      setBlogs(blogs.map(b => b.id !== blog.id ? b : blog))
-    } catch (exception) {
-      notify(exception.response.data.err, 'error')
-    }
-  }
-
-  const removeBlog = async blog => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.remove(blog.id)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
-        notify(`Removed blog ${blog.title} by ${blog.author} successfully`, 'success')
-      } catch (exception) {
-        notify(exception.response.data.err, 'error')
-      }
-    }
   }
 
   if (!user) {
@@ -76,7 +42,7 @@ const App = () => {
       <>
         <h2>log in to application</h2>
         <Notification />
-        <LoginForm login={login} />
+        <LoginForm />
       </>
     )
   }
@@ -91,13 +57,9 @@ const App = () => {
         <button id="logout" onClick={logout}>logout</button>
       </p>
 
-      <CreateBlogForm user={user} />
+      <CreateBlogForm />
 
-      <BlogList
-        user={user}
-        likeClick={likeBlog}
-        removeClick={removeBlog}
-      />
+      <BlogList />
     </div>
   )
 }

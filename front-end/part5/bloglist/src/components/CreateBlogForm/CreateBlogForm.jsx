@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import blogService from '../../services/blogs'
 
@@ -7,9 +7,11 @@ import { createBlog } from '../../reducers/blogReducer'
 import { notify } from '../../reducers/notificationReducer'
 
 import Togglable from '../Togglable'
+import { selectUser } from '../../reducers/userReducer'
 
-const CreateBlogForm = ({ user }) => {
+const CreateBlogForm = () => {
   const dispatch = useDispatch()
+  const user = useSelector(selectUser)
   const blogFormRef = useRef()
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -21,6 +23,7 @@ const CreateBlogForm = ({ user }) => {
       const newBlog = { title, author, url }
       const savedBlog = await blogService.create(newBlog)
       savedBlog.user = user
+      console.log(user)
       dispatch(createBlog(savedBlog))
       setTitle('')
       setAuthor('')
