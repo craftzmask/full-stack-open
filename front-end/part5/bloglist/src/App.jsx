@@ -6,24 +6,20 @@ import loginService from './services/login'
 
 import CreateBlogForm from './components/CreateBlogForm/CreateBlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 
 import { notify } from './reducers/notificationReducer'
+import { setBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
-
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService
+      .getAll()
+      .then(blogs => dispatch(setBlogs( blogs )))
   }, [])
 
   useEffect(() => {
@@ -51,18 +47,6 @@ const App = () => {
     window.localStorage.removeItem('user')
     setUser(null)
     dispatch(notify('Goodbye', 'success'))
-  }
-
-  const addBlog = async newBlog => {
-    try {
-      const savedBlog = await blogService.create(newBlog)
-      savedBlog.user = user
-      setBlogs(blogs.concat(savedBlog))
-      blogFormRef.current.toggleVisibility()
-      notify(`a new blog ${savedBlog.title} by ${savedBlog.author} saved`, 'success')
-    } catch (exception) {
-      notify(exception.response.data.err, 'error')
-    }
   }
 
   const likeBlog = async (id, updatedBlog) => {
@@ -107,12 +91,9 @@ const App = () => {
         <button id="logout" onClick={logout}>logout</button>
       </p>
 
-      <Togglable labelButton="new blog" ref={blogFormRef}>
-        <CreateBlogForm addBlog={addBlog} />
-      </Togglable>
+      <CreateBlogForm user={user} />
 
       <BlogList
-        blogs={sortedBlogs}
         user={user}
         likeClick={likeBlog}
         removeClick={removeBlog}
