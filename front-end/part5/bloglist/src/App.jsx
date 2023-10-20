@@ -12,16 +12,16 @@ import BlogList from './components/BlogList'
 import Blog from './components/Blog/Blog'
 import UserList from './components/UserList'
 
-import { notify } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
-import { selectUser, setUser, clearUser } from './reducers/userReducer'
+import { selectUser, setUser } from './reducers/userReducer'
 import User from './components/User'
+import NavBar from './components/NavBar'
 
 const App = () => {
   const [users, setUsers] = useState([])
   const viewdUsermatch = useMatch('/users/:id')
   const viewedUser = viewdUsermatch
-  ? users.find(u => u.id === match.params.id)
+  ? users.find(u => u.id === viewdUsermatch.params.id)
   : null
 
   const user = useSelector(selectUser)
@@ -45,11 +45,6 @@ const App = () => {
     }
   }, [])
 
-  const logout = () => {
-    window.localStorage.removeItem('user')
-    dispatch(clearUser())
-    dispatch(notify('Goodbye', 'success'))
-  }
 
   if (!user) {
     return (
@@ -63,13 +58,11 @@ const App = () => {
 
   return (
     <>
+      <NavBar />
+
       <h2 id="blogs">blogs</h2>
       <Notification />
 
-      <p>
-        {user.username} logged in
-        <button id="logout" onClick={logout}>logout</button>
-      </p>
       <CreateBlogForm />
 
       <Routes>
