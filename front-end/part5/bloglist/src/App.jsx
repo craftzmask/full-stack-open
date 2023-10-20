@@ -1,18 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import blogService from './services/blogs'
+import userService from './services/users'
 
 import CreateBlogForm from './components/CreateBlogForm/CreateBlogForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import UserList from './components/UserList'
 
 import { notify } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { selectUser, setUser, clearUser } from './reducers/userReducer'
 
 const App = () => {
+  const [users, setUsers] = useState([])
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
@@ -20,6 +23,9 @@ const App = () => {
     blogService
       .getAll()
       .then(blogs => dispatch(setBlogs( blogs )))
+    userService
+      .getAll()
+      .then(users => setUsers(users))
   }, [])
 
   useEffect(() => {
@@ -60,6 +66,9 @@ const App = () => {
       <CreateBlogForm />
 
       <BlogList />
+
+      <h2>Users</h2>
+      <UserList users={users} />
     </div>
   )
 }
