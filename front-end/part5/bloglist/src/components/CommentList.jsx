@@ -8,7 +8,7 @@ const CommentList = ({ blog }) => {
     blogService
       .getComments(blog.id)
       .then(comments => setComments(comments))
-  }, [blog.id])
+  }, [blog])
 
   return (
     <ul>

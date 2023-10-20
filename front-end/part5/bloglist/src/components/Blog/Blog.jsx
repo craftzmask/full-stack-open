@@ -3,6 +3,7 @@ import { likeBLog, selectBlogs } from '../../reducers/blogReducer'
 import { useParams } from 'react-router-dom'
 
 import CommentList from '../CommentList'
+import CommentForm from '../CommentForm'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -27,6 +28,8 @@ const Blog = () => {
       </p>
       <p>added by {blog.author}</p>
 
+      <h3>comments</h3>
+      <CommentForm blog={blog} />
       <CommentList blog={blog} />
     </div>
   )
