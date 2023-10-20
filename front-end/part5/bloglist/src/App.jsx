@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
 import blogService from './services/blogs'
 import userService from './services/users'
@@ -13,9 +14,14 @@ import UserList from './components/UserList'
 import { notify } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { selectUser, setUser, clearUser } from './reducers/userReducer'
+import User from './components/User'
 
 const App = () => {
+  const match = useMatch('/users/:id')
   const [users, setUsers] = useState([])
+  const viewedUser = match
+  ? users.find(u => u.id === match.params.id)
+  : null
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
@@ -57,6 +63,10 @@ const App = () => {
     <div>
       <h2 id="blogs">blogs</h2>
       <Notification />
+      <Routes>
+        <Route index element={ <BlogList />} />
+        <Route path="*" element={<p>Path not resolved</p>} />
+      </Routes>
 
       <p>
         {user.username} logged in
@@ -65,10 +75,10 @@ const App = () => {
 
       <CreateBlogForm />
 
-      <BlogList />
-
-      <h2>Users</h2>
-      <UserList users={users} />
+      <Routes>
+        <Route path='/users/:id' element={<User user={viewedUser} />} />
+        <Route path='/users' element={<UserList users={users} />} />
+      </Routes>
     </div>
   )
 }
