@@ -1,51 +1,31 @@
-import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { likeBLog, removeBlog } from '../../reducers/blogReducer'
-import { selectUser } from '../../reducers/userReducer'
+import { likeBLog, selectBlogs } from '../../reducers/blogReducer'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog }) => {
-  const user = useSelector(selectUser)
-  const [visible, setVisible] = useState(false)
+const Blog = () => {
   const dispatch = useDispatch()
+  const id = useParams().id
+  const blogs = useSelector(selectBlogs)
+  const blog = blogs.find(b => b.id === id)
+  
+  if (!blog) return null
 
-  const showDetail = () => (
-    <div className='blogDetails'>
-      <p>{blog.url}</p>
+  return (
+    <div className='blog'>
+      <h1>{blog.title}</h1>
+      <a href="#">{blog.url}</a>
       <p>
         likes {blog.likes}
-        <button className='likeButton' onClick={() => dispatch(likeBLog(blog))}>
+        <button
+          className='likeButton'
+          onClick={() => dispatch(likeBLog(blog))}
+        >
           like
         </button>
       </p>
-      <p>{blog.user?.username}</p>
-      {
-        blog.user?.username === user.username
-          ? <button id="remove-button" onClick={() => dispatch(removeBlog(blog.id))}>
-              remove
-            </button>
-          : null
-      }
+      <p>added by {blog.author}</p>
     </div>
   )
-
-  return (
-    <div className='blog' style={blogStyle}>
-      {blog.title} {blog.author}
-      <button className='toggleButton' onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'view'}
-      </button>
-
-      {visible && showDetail()}
-    </div>
-  )
-}
-
-const blogStyle = {
-  paddingTop: 10,
-  paddingLeft: 2,
-  border: 'solid',
-  borderWidth: 1,
-  marginBottom: 5
 }
 
 export default Blog

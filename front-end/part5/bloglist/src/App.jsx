@@ -9,6 +9,7 @@ import CreateBlogForm from './components/CreateBlogForm/CreateBlogForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog/Blog'
 import UserList from './components/UserList'
 
 import { notify } from './reducers/notificationReducer'
@@ -17,11 +18,12 @@ import { selectUser, setUser, clearUser } from './reducers/userReducer'
 import User from './components/User'
 
 const App = () => {
-  const match = useMatch('/users/:id')
   const [users, setUsers] = useState([])
-  const viewedUser = match
+  const viewdUsermatch = useMatch('/users/:id')
+  const viewedUser = viewdUsermatch
   ? users.find(u => u.id === match.params.id)
   : null
+
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
@@ -60,26 +62,24 @@ const App = () => {
   }
 
   return (
-    <div>
+    <>
       <h2 id="blogs">blogs</h2>
       <Notification />
-      <Routes>
-        <Route index element={ <BlogList />} />
-        <Route path="*" element={<p>Path not resolved</p>} />
-      </Routes>
 
       <p>
         {user.username} logged in
         <button id="logout" onClick={logout}>logout</button>
       </p>
-
       <CreateBlogForm />
 
       <Routes>
+        <Route index element={<BlogList />} />
+        <Route path='/blogs/:id' element={<Blog />} />
+        <Route path='/blogs' element={<BlogList />} />
         <Route path='/users/:id' element={<User user={viewedUser} />} />
         <Route path='/users' element={<UserList users={users} />} />
       </Routes>
-    </div>
+    </>
   )
 }
 
