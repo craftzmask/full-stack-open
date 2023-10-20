@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { likeBLog, selectBlogs } from '../../reducers/blogReducer'
 import { useParams } from 'react-router-dom'
 
+import CommentList from '../CommentList'
+
 const Blog = () => {
   const dispatch = useDispatch()
   const id = useParams().id
@@ -24,6 +26,8 @@ const Blog = () => {
         </button>
       </p>
       <p>added by {blog.author}</p>
+
+      <CommentList blog={blog} />
     </div>
   )
 }
