@@ -1,5 +1,9 @@
 import { useState } from 'react'
 
+import Filter from './components/Filter'
+import AddPersonForm from './components/AddPersonForm'
+import Persons from './components/Persons'
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -11,8 +15,15 @@ const App = () => {
   const [number, setNumber] = useState('')
   const [filter, setFilter] = useState('')
 
+  const filteredPersons = persons.filter(p => {
+    return filter
+      ? p.name.toLowerCase().includes(filter.toLowerCase())
+      : persons
+  })
+
   const addPerson = e => {
     e.preventDefault()
+
     if (persons.find(p => p.name === name)) {
       alert(`${name} is already added to phonebook`)
     } else {
@@ -23,43 +34,20 @@ const App = () => {
     }
   }
 
-  const filteredPersons = persons.filter(p => {
-    return filter
-      ? p.name.toLowerCase().includes(filter.toLowerCase())
-      : persons
-  })
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input
-          value={filter}
-          onChange={e => setFilter(e.target.value)}
-        />
-      </div>
+      <Filter filter={filter} setFilter={setFilter} />
+
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          number: <input
-            value={number}
-            onChange={e => setNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <AddPersonForm
+        onSubmit={addPerson}
+        name={name} setName={setName}
+        number={number} setNumber={setNumber}
+      />
+
       <h2>Numbers</h2>
-      {filteredPersons.map(person => 
-        <div key={person.name}>{person.name} {person.number}</div>
-      )}
+      <Persons persons={filteredPersons} />
     </div>
   )
 }
