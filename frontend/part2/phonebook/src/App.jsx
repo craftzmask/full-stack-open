@@ -2,16 +2,17 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '123-123123' }
   ]) 
   const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
 
   const addPerson = e => {
     e.preventDefault()
     if (persons.find(p => p.name === name)) {
       alert(`${name} is already added to phonebook`)
     } else {
-      const personObject = { name: name }
+      const personObject = { name, number }
       setPersons(persons.concat(personObject))
       setName('')
     }
@@ -19,6 +20,10 @@ const App = () => {
 
   const handleNameChange = e => {
     setName(e.target.value)
+  }
+
+  const handleNumberChange = e => {
+    setNumber(e.target.value)
   }
 
   return (
@@ -32,12 +37,18 @@ const App = () => {
           />
         </div>
         <div>
+          number: <input
+            value={number}
+            onChange={handleNumberChange}
+          />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
       {persons.map(person => 
-        <p key={person.name}>{person.name}</p>
+        <div key={person.name}>{person.name} {person.number}</div>
       )}
     </div>
   )
