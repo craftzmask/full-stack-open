@@ -40,6 +40,16 @@ const App = () => {
     }
   }
 
+  const deletePerson = personToDelete => {
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      axios
+        .delete(`http://localhost:3001/persons/${personToDelete.id}`)
+        .then(() =>
+          setPersons(persons.filter(p => p.id !== personToDelete.id))
+        )
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -53,7 +63,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onDelete={deletePerson}/>
     </div>
   )
 }
