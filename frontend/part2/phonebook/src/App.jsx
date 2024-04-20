@@ -6,6 +6,8 @@ import AddPersonForm from './components/AddPersonForm'
 import Persons from './components/Persons'
 import Notification from './components/Notification'
 
+import personService from './services/persons'
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [name, setName] = useState('')
@@ -21,9 +23,9 @@ const App = () => {
   })
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => setPersons(res.data))
+    personService
+      .getAll()
+      .then(initialPersons => setPersons(initialPersons))
   }, [])
 
   const notify = (message, status) => {
@@ -49,29 +51,29 @@ const App = () => {
     const foundPerson = persons.find(p => p.name === name)
     if (foundPerson) {
       if (window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)) {
-        axios
-          .put(`http://localhost:3001/persons/${foundPerson.id}`, personObject)
-          .then(res => {
-            setPersons(persons.map(p => p.id !== res.data.id ? p : res.data))
+        personService
+          .update(foundPerson.id, personObject)
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id !== updatedPerson.id ? p : updatedPerson))
             clearForm()
-            notify(`Updated ${res.data.name}'s number successfully`, 'success')
+            notify(`Updated ${updatedPerson.name}'s number successfully`, 'success')
           })
       }
     } else {
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(res => {
-          setPersons(persons.concat(res.data))
+      personService
+        .create(personObject)
+        .then(createdPerson => {
+          setPersons(persons.concat(createdPerson))
           clearForm()
-          notify(`Added a new person named ${res.data.name} successfully`, 'success')
+          notify(`Added a new person named ${createdPerson.name} successfully`, 'success')
         })
     }
   }
 
   const deletePerson = personToDelete => {
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
-      axios
-        .delete(`http://localhost:3001/persons/${personToDelete.id}`)
+      personService
+        .remove(personToDelete.id)
         .then(() =>
           setPersons(persons.filter(p => p.id !== personToDelete.id))
         )
