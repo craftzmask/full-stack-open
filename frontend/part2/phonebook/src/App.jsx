@@ -26,10 +26,18 @@ const App = () => {
   const addPerson = e => {
     e.preventDefault()
 
-    if (persons.find(p => p.name === name)) {
-      alert(`${name} is already added to phonebook`)
+    const personObject = { name, number }
+
+    const foundPerson = persons.find(p => p.name === name)
+    if (foundPerson) {
+      if (window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)) {
+        axios
+          .put(`http://localhost:3001/persons/${foundPerson.id}`, personObject)
+          .then(res => setPersons(persons.map(p => p.id !== res.data.id ? p : res.data)))
+        setName('')
+        setNumber('')
+      }
     } else {
-      const personObject = { name, number }
       axios
         .post('http://localhost:3001/persons', personObject)
         .then(res => {
