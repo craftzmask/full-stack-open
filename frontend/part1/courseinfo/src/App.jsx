@@ -18,17 +18,23 @@ const Part = (props) => {
   return <p>{props.part} {props.exercises}</p>
 }
 
-const Total = (props) => {
+const Total = ({ sum }) => {
   return (
-    <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
+    <p><strong>total of {sum} exercises</strong></p>
   )
 }
 
 const Course = ({ course }) => {
+  let sum = 0
+  for (let i = 0; i < course.parts.length; i++) {
+    sum += course.parts[i].exercises
+  }
+
   return (
     <div>
       <Header course={course} />
       <Content parts={course.parts} />
+      <Total sum={sum} />
     </div>
   )
 }
