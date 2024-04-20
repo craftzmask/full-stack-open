@@ -25,7 +25,7 @@ function App() {
           onChange={e => setFilter(e.target.value)}
         />
       </div>
-      <Countries countries={filteredCountries} />
+      <Countries countries={filteredCountries} showCountry={setFilter} />
     </>
   )
 }
