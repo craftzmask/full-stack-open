@@ -58,6 +58,10 @@ const App = () => {
             clearForm()
             notify(`Updated ${updatedPerson.name}'s number successfully`, 'success')
           })
+          .catch(() => {
+            setPersons(persons.filter(p => p.id !== foundPerson.id))
+            notify(`Information of ${foundPerson.name} has been removed from the server`, 'error')
+          })
       }
     } else {
       personService
