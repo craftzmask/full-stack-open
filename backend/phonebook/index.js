@@ -28,6 +28,17 @@ app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const found = persons.find(p => p.id === id)
+  
+  if (found) {
+    res.json(found)
+  } else {
+    res.status(404).end()
+  }
+})
+
 app.get('/info', (req, res) => {
   res.send(
     `
