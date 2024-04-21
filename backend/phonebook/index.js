@@ -44,8 +44,22 @@ app.get(`${baseUrl}/:id`, (req, res) => {
 })
 
 app.post(baseUrl, (req, res) => {
+  const body = req.body
+
+  if (!(body.name && body.number)) {
+    return res.status(400).json({
+      error: 'missing name or number'
+    })
+  }
+
+  if (persons.find(p => p.name === body.name)) {
+    return res.status(400).json({
+      error: 'name is already existed'
+    })
+  }
+
   const id = Math.floor(Math.random() * 10000000)
-  const newPerson = { ...req.body, id }
+  const newPerson = { ...body, id }
   persons = persons.concat(newPerson)
   res.json(newPerson)
 })
