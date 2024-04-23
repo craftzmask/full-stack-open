@@ -47,7 +47,7 @@ app.post(baseUrl, (req, res, next) => {
 
 app.put(`${baseUrl}/:id`, (req, res, next) => {
   Person
-    .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
     .then(updatedPerson => res.json(updatedPerson))
     .catch(err => next(err))
 })

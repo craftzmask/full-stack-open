@@ -57,10 +57,7 @@ const App = () => {
             clearForm()
             notify(`Updated ${updatedPerson.name}'s number successfully`, 'success')
           })
-          .catch(() => {
-            setPersons(persons.filter(p => p.id !== foundPerson.id))
-            notify(`Information of ${foundPerson.name} has been removed from the server`, 'error')
-          })
+          .catch(err => notify(err.response.data.error, 'error'))
       }
     } else {
       personService
@@ -70,9 +67,7 @@ const App = () => {
           clearForm()
           notify(`Added a new person named ${createdPerson.name} successfully`, 'success')
         })
-        .catch(err => {
-          notify(`${err.response.data.error}`, 'error')
-        })
+        .catch(err => notify(err.response.data.error, 'error'))
     }
   }
 
