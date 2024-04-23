@@ -41,15 +41,16 @@ app.get(baseUrl, (req, res) => {
     .then(persons => res.json(persons))
 })
 
-app.get(`${baseUrl}/:id`, (req, res) => {
-  const id = Number(req.params.id)
-  const found = persons.find(p => p.id === id)
-  
-  if (found) {
-    res.json(found)
-  } else {
-    res.status(404).end()
-  }
+app.get(`${baseUrl}/:id`, (req, res, next) => {
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(err => next(err))
 })
 
 app.post(baseUrl, (req, res) => {
@@ -81,14 +82,16 @@ app.delete(`${baseUrl}/:id`, (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-  res.send(
-    `
-      <div>
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${Date()}</p>
-      </div>
-    `
-  )
+  Person.find({}).then(persons => {
+    res.send(
+      `
+        <div>
+          <p>Phonebook has info for ${persons.length} people</p>
+          <p>${Date()}</p>
+        </div>
+      `
+    )
+  })
 })
 
 
