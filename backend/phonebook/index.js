@@ -66,6 +66,13 @@ app.post(baseUrl, (req, res) => {
     .then(savedPerson => res.json(savedPerson))
 })
 
+app.put(`${baseUrl}/:id`, (req, res, next) => {
+  Person
+    .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(updatedPerson => res.json(updatedPerson))
+    .catch(err => next(err))
+})
+
 app.delete(`${baseUrl}/:id`, (req, res, next) => {
   Person
     .findByIdAndDelete(req.params.id)
