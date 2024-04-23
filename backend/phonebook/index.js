@@ -37,8 +37,7 @@ let persons = [
 const baseUrl = '/api/persons'
 
 app.get(baseUrl, (req, res) => {
-  Person
-    .find({})
+  Person.find({})
     .then(persons => res.json(persons))
 })
 
@@ -62,16 +61,9 @@ app.post(baseUrl, (req, res) => {
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return res.status(400).json({
-      error: 'name is already existed'
-    })
-  }
-
-  const id = Math.floor(Math.random() * 10000000)
-  const newPerson = { ...body, id }
-  persons = persons.concat(newPerson)
-  res.json(newPerson)
+  const person = new Person({ ...body })
+  person.save()
+    .then(savedPerson => res.json(savedPerson))
 })
 
 app.delete(`${baseUrl}/:id`, (req, res) => {
