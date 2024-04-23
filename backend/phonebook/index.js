@@ -66,11 +66,11 @@ app.post(baseUrl, (req, res) => {
     .then(savedPerson => res.json(savedPerson))
 })
 
-app.delete(`${baseUrl}/:id`, (req, res) => {
+app.delete(`${baseUrl}/:id`, (req, res, next) => {
   Person
     .findByIdAndDelete(req.params.id)
     .then(() => res.status(204).end())
-    .catch(err => console.log(err))
+    .catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
@@ -83,6 +83,19 @@ app.get('/info', (req, res) => {
     `
   )
 })
+
+
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(err)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
