@@ -70,6 +70,9 @@ const App = () => {
           clearForm()
           notify(`Added a new person named ${createdPerson.name} successfully`, 'success')
         })
+        .catch(err => {
+          notify(`${err.response.data.error}`, 'error')
+        })
     }
   }
 
