@@ -72,7 +72,6 @@ app.get('/info', (req, res) => {
   })
 })
 
-
 const errorHandler = (err, req, res, next) => {
   console.error(err.message)
 

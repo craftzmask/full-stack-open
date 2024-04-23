@@ -26,7 +26,7 @@ if (len === 3) {
     .find({})
     .then(persons => {
       console.log('phonebook:')
-      persons.forEach(person => 
+      persons.forEach(person =>
         console.log(`${person.name} ${person.number}`)
       )
       mongoose.connection.close()
