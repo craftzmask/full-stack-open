@@ -85,7 +85,23 @@ test('cannot create blog without title or url', async () => {
   assert.strictEqual(response.body.length, helper.blogs.length)
 })
 
-test.only('delete valid blog', async () => {
+test.only("a valid blog can be updated", async () => {
+  const blogs = await helper.blogsInDb()
+  const blog = blogs[0]
+
+  const response = await api
+    .put(`/api/blogs/${blog.id}`)
+    .send({
+      ...blog,
+      likes: blog.likes + 1
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.likes, blog.likes + 1)
+})
+
+test('delete valid blog', async () => {
   const blogs = await helper.blogsInDb()
   const blog = blogs[0]
 
