@@ -24,13 +24,31 @@ test('get all blogs', async () => {
   assert.strictEqual(response.body.length, helper.blogs.length)
 })
 
-test.only('get blog by id', async () => {
+test('get blog by id', async () => {
   const blogs = await helper.blogsInDb()
   const response = await api
     .get(`/api/blogs/${blogs[0].id}`)
     .expect(200)
     .expect('Content-Type', /application\/json/)
   assert.deepStrictEqual(response.body, blogs[0])
+})
+
+test('post a valid blog', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.blogs[0])
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.length, helper.blogs.length + 1)
+
+  const titles = response.body.map(b => b.title)
+  assert(titles.includes(helper.blogs[0].title))
 })
 
 after(async () => {
