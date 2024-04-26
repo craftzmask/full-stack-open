@@ -15,13 +15,22 @@ beforeEach(async () => {
   await Promise.all(promisedBlogs)
 })
 
-test.only('blogs', async () => {
+test('get all blogs', async () => {
   const response = await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
   assert.strictEqual(response.body.length, helper.blogs.length)
+})
+
+test.only('get blog by id', async () => {
+  const blogs = await helper.blogsInDb()
+  const response = await api
+    .get(`/api/blogs/${blogs[0].id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  assert.deepStrictEqual(response.body, blogs[0])
 })
 
 after(async () => {
