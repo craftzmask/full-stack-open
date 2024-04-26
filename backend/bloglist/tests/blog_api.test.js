@@ -64,7 +64,7 @@ test('missing likes property will automatically set it to 0', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
-test.only('cannot create blog without title or url', async () => {
+test('cannot create blog without title or url', async () => {
   let blog = helper.blogs[0]
   delete blog.title
 
@@ -83,6 +83,21 @@ test.only('cannot create blog without title or url', async () => {
 
   const response = await api.get('/api/blogs')
   assert.strictEqual(response.body.length, helper.blogs.length)
+})
+
+test.only('delete valid blog', async () => {
+  const blogs = await helper.blogsInDb()
+  const blog = blogs[0]
+
+  await api
+    .delete(`/api/blogs/${blog.id}`)
+    .expect(204)
+
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, helper.blogs.length - 1)
+
+  const titles = response.body.map(b => b.title)
+  assert(!titles.includes(blog.title))
 })
 
 after(async () => {
