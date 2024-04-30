@@ -12,7 +12,7 @@ Content-Type: application/json
 ###
 post http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtoYW5oY2h1bmciLCJpZCI6IjY2MmRlN2YyM2NlNTAxOWQzOGZkYjM3MiIsImlhdCI6MTcxNDUxODQ2NX0._Pwt-TRmaYTH2aOaqO1GbsGT5QUsDq9Nbo4Sxah4oG4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtoYW5oY2h1bmciLCJpZCI6IjY2MmRlN2YyM2NlNTAxOWQzOGZkYjM3MiIsImlhdCI6MTcxNDUxOTA0MH0.3Fdt6TZMvMfjUuaogWC9-3rSt3dgwGVysRvyLa0dIPU
 
 {
   "title": "Hello World",
