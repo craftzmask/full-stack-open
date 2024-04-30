@@ -1,6 +1,15 @@
 const blogsRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('userId')
@@ -12,28 +21,47 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog)
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
-  const users = await User.find({})
 
-  if (!(body.title && body.url)) {
-    return response.status(400).send({
-      error: 'missing title or url'
+  const token = getTokenFrom(request)
+  if (!token) {
+    return response.status(401).send({
+      error: 'invalid token'
     })
   }
 
-  const blog = new Blog({
-    ...body,
-    userId: users[0]._id,
-    likes: body.likes ? body.likes : 0
-  })
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).send({
+        error: 'invalid token'
+      })
+    }
 
-  const savedBlog = await blog.save()
+    const user = await User.findById(decodedToken.id)
+
+    if (!(body.title && body.url)) {
+      return response.status(400).send({
+        error: 'missing title or url'
+      })
+    }
   
-  users[0].blogs = users[0].blogs.concat(savedBlog)
-  await users[0].save()
-
-  response.status(201).json(savedBlog)
+    const blog = new Blog({
+      ...body,
+      userId: user._id,
+      likes: body.likes ? body.likes : 0
+    })
+  
+    const savedBlog = await blog.save()
+    
+    user.blogs = user.blogs.concat(savedBlog)
+    await user.save()
+  
+    response.status(201).json(savedBlog)
+  } catch (exception) {
+    next(exception)
+  }
 })
 
 blogsRouter.put('/:id', async (request, response) => {
