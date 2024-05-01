@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,6 +17,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [status, setStatus] = useState(null)
+  const newBlogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -63,7 +65,7 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
-
+    newBlogFormRef.current.toggleVisibility()
     notify(`${savedBlog.title} by ${savedBlog.author} added`, 'success')
   }
 
@@ -98,16 +100,18 @@ const App = () => {
       <Notification message={message} status={status} />
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
       
-      <h2>create new</h2>
-      <NewBlogForm
-        title={title}
-        onTitleChange={e => setTitle(e.target.value)}
-        author={author}
-        onAuthorChange={e => setAuthor(e.target.value)}
-        url={url}
-        onUrlChange={e => setUrl(e.target.value)}
-        onSubmit={createBlog}
-      />
+      <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
+        <h2>create new</h2>
+        <NewBlogForm
+          title={title}
+          onTitleChange={e => setTitle(e.target.value)}
+          author={author}
+          onAuthorChange={e => setAuthor(e.target.value)}
+          url={url}
+          onUrlChange={e => setUrl(e.target.value)}
+          onSubmit={createBlog}
+        />
+      </Togglable>
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
