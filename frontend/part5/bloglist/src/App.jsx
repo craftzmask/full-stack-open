@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [status, setStatus] = useState(null)
   const newBlogFormRef = useRef()
@@ -26,9 +23,10 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const user = localStorage.getItem('user')
+    let user = localStorage.getItem('user')
     if (user) {
-      setUser(JSON.parse(user))
+      user = JSON.parse(user)
+      setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -54,17 +52,8 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = async e => {
-    e.preventDefault()
-
-    const savedBlog = await blogService.create({
-      title, author, url
-    })
-
+  const createBlog = savedBlog => {
     setBlogs(blogs.concat(savedBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
     newBlogFormRef.current.toggleVisibility()
     notify(`${savedBlog.title} by ${savedBlog.author} added`, 'success')
   }
@@ -102,15 +91,7 @@ const App = () => {
       
       <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
         <h2>create new</h2>
-        <NewBlogForm
-          title={title}
-          onTitleChange={e => setTitle(e.target.value)}
-          author={author}
-          onAuthorChange={e => setAuthor(e.target.value)}
-          url={url}
-          onUrlChange={e => setUrl(e.target.value)}
-          onSubmit={createBlog}
-        />
+        <NewBlogForm onSubmit={createBlog} />
       </Togglable>
 
       {blogs.map(blog =>
