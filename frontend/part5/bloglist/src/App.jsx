@@ -53,10 +53,14 @@ const App = () => {
   }
 
   const createBlog = async blog => {
-    const savedBlog = await blogService.create(blog)
-    setBlogs(blogs.concat(savedBlog))
-    newBlogFormRef.current.toggleVisibility()
-    notify(`${savedBlog.title} by ${savedBlog.author} added`, 'success')
+    try {
+      const savedBlog = await blogService.create(blog)
+      setBlogs(blogs.concat(savedBlog))
+      newBlogFormRef.current.toggleVisibility()
+      notify(`${savedBlog.title} by ${savedBlog.author} added`, 'success')
+    } catch (exception) {
+      notify(exception.response.data.error, 'error')
+    }
   }
 
   const notify = (message, status) => {
@@ -76,6 +80,17 @@ const App = () => {
     })
 
     setBlogs(blogs.map(b => b.id !== updated.id ? b : updated))
+  }
+
+  const handleDeleteClick = async blog => {
+    if (confirm(`Remove ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+      } catch (exception) {
+        notify(exception.response.data.error, 'error')
+      }
+    }
   }
 
   if (!user) {
@@ -109,7 +124,11 @@ const App = () => {
         [...blogs]
           .sort((a, b) => a.likes - b.likes)
           .map(blog =>
-            <Blog key={blog.id} blog={blog} onLike={handleLikeClick} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              onLike={handleLikeClick}
+              onDelete={handleDeleteClick} />
           )
       }
     </div>
