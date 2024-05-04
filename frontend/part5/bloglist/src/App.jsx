@@ -51,9 +51,9 @@ const App = () => {
     localStorage.clear()
     setUser(null)
   }
-
+  console.log(user)
   const createBlog = async blog => {
-    const savedBlog = await blogService.create(savedBlog)
+    const savedBlog = await blogService.create(blog)
     setBlogs(blogs.concat(savedBlog))
     newBlogFormRef.current.toggleVisibility()
     notify(`${savedBlog.title} by ${savedBlog.author} added`, 'success')
@@ -66,6 +66,16 @@ const App = () => {
       setMessage(null)
       setStatus(null)
     }, 5000)
+  }
+
+  const handleLikeClick = async blog => {
+    const updated = await blogService.update(blog.id, {
+      ...blog,
+      user: blog.user.id,
+      likes: blog.likes + 1
+    })
+
+    setBlogs(blogs.map(b => b.id !== updated.id ? b : updated))
   }
 
   if (!user) {
@@ -96,7 +106,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} onLike={handleLikeClick} />
       )}
     </div>
   )

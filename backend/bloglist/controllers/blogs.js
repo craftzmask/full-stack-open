@@ -5,7 +5,7 @@ const User = require('../models/user')
 const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('userId')
+  const blogs = await Blog.find({}).populate('user')
   response.json(blogs)
 })
 
@@ -26,7 +26,7 @@ blogsRouter.post('/', userExtractor, async (request, response, next) => {
 
   const blog = new Blog({
     ...body,
-    userId: user._id,
+    user: user._id,
     likes: body.likes ? body.likes : 0
   })
 
@@ -49,7 +49,7 @@ blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
   const blogToDelete = await Blog.findById(request.params.id)
   const user = request.user
 
-  if (blogToDelete.userId.toString() === user._id.toString()) {
+  if (blogToDelete.user.toString() === user._id.toString()) {
     user.blogs = user.blogs.filter(b => b.id !== request.params.id)
     await user.save()
     await Blog.findByIdAndDelete(request.params.id)

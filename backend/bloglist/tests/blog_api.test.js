@@ -24,7 +24,7 @@ beforeEach(async () => {
 
   await Blog.deleteMany({})
   const blogs = helper.blogs.map(b => {
-    b.userId = savedUser._id
+    b.user = savedUser._id
     return new Blog(b)
   })
   const promisedBlogs = blogs.map(b => b.save())
@@ -43,7 +43,7 @@ test('get all blogs', async () => {
 test('get blog by id', async () => {
   const blogs = await helper.blogsInDb()
   const blog = blogs[0]
-  blog.userId = blog.userId._id.toString()
+  blog.user = blog.user._id.toString()
 
   const response = await api
     .get(`/api/blogs/${blogs[0].id}`)
