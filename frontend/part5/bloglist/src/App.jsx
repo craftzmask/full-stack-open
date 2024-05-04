@@ -51,7 +51,7 @@ const App = () => {
     localStorage.clear()
     setUser(null)
   }
-  console.log(user)
+
   const createBlog = async blog => {
     const savedBlog = await blogService.create(blog)
     setBlogs(blogs.concat(savedBlog))
@@ -105,9 +105,13 @@ const App = () => {
         <NewBlogForm onSubmit={createBlog} />
       </Togglable>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} onLike={handleLikeClick} />
-      )}
+      {
+        [...blogs]
+          .sort((a, b) => a.likes - b.likes)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog} onLike={handleLikeClick} />
+          )
+      }
     </div>
   )
 }
