@@ -18,7 +18,7 @@ const Blog = ({ blog, onLike }) => {
       <div style={{ display: visiable ? '' : 'none' }}>
         <div>{blog.url}</div>
         <div>{blog.likes} likes <button onClick={() => onLike(blog)}>likes</button></div>
-        <div>{blog.userId?.name}</div>
+        <div>{blog.user.name}</div>
       </div>
       <button onClick={() => setVisible(!visiable)}>
         {visiable ? 'hide' : 'view'}
