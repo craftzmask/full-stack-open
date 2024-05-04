@@ -41,7 +41,7 @@ const App = () => {
       setUsername('')
       setPassword('')
 
-      notify(`logged in successful`, 'success')
+      notify('logged in successful', 'success')
     } catch (error) {
       notify(error.response.data.error, 'error')
     }
@@ -114,7 +114,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={message} status={status} />
       <p>{user.name} logged in <button onClick={logout}>logout</button></p>
-      
+
       <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
         <h2>create new</h2>
         <NewBlogForm onSubmit={createBlog} />
