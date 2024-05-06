@@ -13,10 +13,9 @@ const Blog = ({ blog, onLike, onDelete }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      {console.log(blog)}
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}
-      <div style={{ display: visiable ? '' : 'none' }}>
+      <div style={{ display: visiable ? '' : 'none' }} className="blog-details">
         <div>{blog.url}</div>
         <div>{blog.likes} likes <button onClick={() => onLike(blog)}>likes</button></div>
         <div>{blog.user.name}</div>
