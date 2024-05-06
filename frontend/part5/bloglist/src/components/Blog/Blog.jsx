@@ -21,7 +21,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
         <div>{blog.user.name}</div>
         <button onClick={() => onDelete(blog)}>remove</button>
       </div>
-      <button onClick={() => setVisible(!visiable)}>
+      <button onClick={() => setVisible(!visiable)} className="show-details">
         {visiable ? 'hide' : 'view'}
       </button>
     </div>
