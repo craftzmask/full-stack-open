@@ -4,6 +4,8 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
   let container = null
+  const like = vi.fn()
+  const remove = vi.fn()
 
   beforeEach(() => {
     const blog = {
@@ -16,9 +18,8 @@ describe('<Blog />', () => {
         name: 'Mike Swit',
       }
     }
-    const fn = vi.fn()
     container = render(
-      <Blog blog={blog} onLike={fn} onDelete={fn} />
+      <Blog blog={blog} onLike={like} onDelete={remove} />
     ).container
   })
 
@@ -31,11 +32,22 @@ describe('<Blog />', () => {
   })
 
   test('click show button to view its details', async () => {
-    const user =  userEvent.setup()
+    const user = userEvent.setup()
     const showButton = container.querySelector('.show-details')
     await user.click(showButton)
     const blogDetails = container.querySelector('.blog-details')
     expect(blogDetails).toHaveStyle('display: block')
     expect(showButton).toHaveTextContent('hide')
+  })
+
+  test('like button clicked twice', async () => {
+    const user = userEvent.setup()
+    const showButton = container.querySelector('.show-details')
+    await user.click(showButton)
+    const likeButton = container.querySelector('.like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(like.mock.calls).toHaveLength(2)
   })
 })
