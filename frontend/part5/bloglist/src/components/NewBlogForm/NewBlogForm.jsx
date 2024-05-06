@@ -15,26 +15,29 @@ const NewBlogForm = ({ onSubmit }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="blog-form">
       <div>
         title: <input
+          id="title-input"
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
       </div>
       <div>
         author: <input
+          id="author-input"
           value={author}
           onChange={e => setAuthor(e.target.value)}
         />
       </div>
       <div>
         url: <input
+          id="url-input"
           value={url}
           onChange={e => setUrl(e.target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <button type="submit" className="create-blog">create</button>
     </form>
   )
 }

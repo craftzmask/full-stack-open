@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
@@ -6,6 +6,8 @@ describe('<Blog />', () => {
   let container = null
   const like = vi.fn()
   const remove = vi.fn()
+  const submit = vi.fn()
+  const user = userEvent.setup()
 
   beforeEach(() => {
     const blog = {
@@ -32,7 +34,6 @@ describe('<Blog />', () => {
   })
 
   test('click show button to view its details', async () => {
-    const user = userEvent.setup()
     const showButton = container.querySelector('.show-details')
     await user.click(showButton)
     const blogDetails = container.querySelector('.blog-details')
@@ -41,7 +42,6 @@ describe('<Blog />', () => {
   })
 
   test('like button clicked twice', async () => {
-    const user = userEvent.setup()
     const showButton = container.querySelector('.show-details')
     await user.click(showButton)
     const likeButton = container.querySelector('.like')
