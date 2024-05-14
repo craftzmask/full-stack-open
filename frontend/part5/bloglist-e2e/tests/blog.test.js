@@ -1,16 +1,16 @@
-const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { test, expect, beforeEach, afterEach, describe } = require('@playwright/test')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http:localhost:3003/api/testing/reset')
-    await request.post('http:localhost:3003/api/users', {
+    await page.goto('/')
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Khanh Chung',
         username: 'khanhchung',
         password: 'khanhchung'
       }
     })
-    await page.goto('http://localhost:5173')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -24,7 +24,7 @@ describe('Blog app', () => {
       await page.getByTestId('username').fill('khanhchung')
       await page.getByTestId('password').fill('khanhchung')
       await page.getByRole('button', { name: 'login' }).click()
-      await expect(page.getByText('logged in successful')).toBeVisible()
+      await expect(page.getByText('Khanh Chung logged in')).toBeVisible()
     })
 
     test('fails with wrong credentitals', async ({ page }) => {
@@ -40,17 +40,16 @@ describe('Blog app', () => {
       await page.getByTestId('username').fill('khanhchung')
       await page.getByTestId('password').fill('khanhchung')
       await page.getByRole('button', { name: 'login' }).click()
-      await expect(page.getByText('logged in successful')).toBeVisible()
+      await expect(page.getByText('Khanh Chung logged in')).toBeVisible()
     })
 
-    test.only('a new blog can be created', async ({ page }) => {
+    test('a new blog can be created', async ({ page }) => {
       await page.getByRole('button', { name: 'new blog' }).click()
       await page.getByTestId('title').fill('A new blog')
       await page.getByTestId('author').fill('John Smith')
       await page.getByTestId('url').fill('example.com')
       await page.getByRole('button', { name: 'create' }).click()
-      await page.getByText('A new blog by John Smithexample.com0likeslikesremoveview').waitFor()
-      await expect(page.getByText('A new blog by John Smithexample.com0likeslikesremoveview')).toBeVisible()
+      await expect(page.getByText('A new blog by John Smith', { exact: true })).toBeVisible()
     })
   })
 })

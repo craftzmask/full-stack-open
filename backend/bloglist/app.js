@@ -12,7 +12,7 @@ const logger = require('./utils/logger')
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
-    logger.info('connected to MongoDB')
+    logger.info(`connected to ${config.MONGODB_URI}`)
   })
   .catch(error => {
     logger.error(error.message)
@@ -27,7 +27,7 @@ app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
-if (process.env.NODE_ENV === 'testing') {
+if (process.env.NODE_ENV === 'test') {
   const testRouter = require('./controllers/tests')
   app.use('/api/testing/', testRouter)
 }

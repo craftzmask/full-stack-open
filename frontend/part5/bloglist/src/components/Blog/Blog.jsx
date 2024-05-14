@@ -14,7 +14,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
 
   return (
     <div style={blogStyle} className="blog">
-      {blog.title} by {blog.author}
+      <span>{blog.title} by {blog.author}</span>
       <div style={{ display: visiable ? '' : 'none' }} className="blog-details">
         <div>{blog.url}</div>
         <div>{blog.likes}likes
@@ -22,7 +22,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
             likes
           </button>
         </div>
-        <div>{blog.user.name}</div>
+        <div>{blog.user?.name}</div>
         <button onClick={() => onDelete(blog)}>remove</button>
       </div>
       <button onClick={() => setVisible(!visiable)} className="show-details">
