@@ -18,21 +18,21 @@ const NewBlogForm = ({ onSubmit }) => {
     <form onSubmit={handleSubmit} className="blog-form">
       <div>
         title: <input
-          id="title-input"
+          data-testid="title"
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
       </div>
       <div>
         author: <input
-          id="author-input"
+          data-testid="author"
           value={author}
           onChange={e => setAuthor(e.target.value)}
         />
       </div>
       <div>
         url: <input
-          id="url-input"
+          data-testid="url"
           value={url}
           onChange={e => setUrl(e.target.value)}
         />

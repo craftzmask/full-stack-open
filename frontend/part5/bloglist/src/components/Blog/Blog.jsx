@@ -14,7 +14,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
 
   return (
     <div style={blogStyle} className="blog">
-      {blog.title} {blog.author}
+      {blog.title} by {blog.author}
       <div style={{ display: visiable ? '' : 'none' }} className="blog-details">
         <div>{blog.url}</div>
         <div>{blog.likes}likes
