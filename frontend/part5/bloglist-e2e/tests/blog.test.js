@@ -84,11 +84,20 @@ describe('Blog app', () => {
       await expect(page.getByText('A new blog by John Smith', { exact: true })).not.toBeVisible()
     })
 
-    test.only('only the user who added the blog sees its delete button', async ({ page }) => {
+    test('only the user who added the blog sees its delete button', async ({ page }) => {
       await page.getByRole('button', { name: 'logout' }).click()
       await login(page, 'root', 'root')
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+    })
+
+    test.only('the blogs are arranged in the order according to the likes', async ({ page }) => {
+      await createBlog(page, 'most liked blog', 'John', 'example.com')
+      const locator = page.getByText('most liked blog by John', { exact: true }).locator('..')
+      await locator.getByRole('button', { name: 'view' }).click()
+      await locator.getByRole('button', { name: 'like' }).click()
+      await page.waitForTimeout(1000);
+      await expect(page.locator('.blog > span')).toContainText(['most liked blog by John', 'A new blog by John Smith'])
     })
   })
 })
