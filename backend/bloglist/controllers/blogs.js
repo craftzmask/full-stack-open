@@ -30,10 +30,12 @@ blogsRouter.post('/', userExtractor, async (request, response, next) => {
     likes: body.likes ? body.likes : 0
   })
 
-  const savedBlog = await blog.save()
+  let savedBlog = await blog.save()
   
   user.blogs = user.blogs.concat(savedBlog)
   await user.save()
+
+  savedBlog = await Blog.findById(savedBlog._id).populate('user')
 
   response.status(201).json(savedBlog)
 })
