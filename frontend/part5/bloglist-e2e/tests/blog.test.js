@@ -50,12 +50,23 @@ describe('Blog app', () => {
       await expect(page.getByText('A new blog by John Smith', { exact: true })).toBeVisible()
     })
 
-    test.only('a blog can be liked', async ({ page }) => {
+    test('a blog can be liked', async ({ page }) => {
       await createBlog(page, 'A new blog', 'John Smith', 'example.com')
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByText('0 likes', { exact: true })).toBeVisible()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('1 likes')).toBeVisible()
+    })
+
+    test.only('only the user who added the blog can delete the blog', async ({ page }) => {
+      await createBlog(page, 'A new blog', 'John Smith', 'example.com')
+      await page.getByRole('button', { name: 'view' }).click()
+      page.on('dialog', async dialog => {
+        expect(dialog.message()).toContain('Remove A new blog by John Smith')
+        await dialog.accept()
+      })
+      await page.getByRole('button', { name: 'remove' }).click()
+      await expect(page.getByText('A new blog by John Smith', { exact: true })).not.toBeVisible()
     })
   })
 })
