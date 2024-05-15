@@ -12,6 +12,14 @@ describe('Blog app', () => {
         password: 'khanhchung'
       }
     })
+
+    await request.post('/api/users', {
+      data: {
+        name: 'Root User',
+        username: 'root',
+        password: 'root'
+      }
+    })
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -42,24 +50,31 @@ describe('Blog app', () => {
           password: 'khanhchung'
         }
       })
+
+      await request.post('/api/users', {
+        data: {
+          name: 'Root User',
+          username: 'root',
+          password: 'root'
+        }
+      })
+
       await login(page, 'khanhchung', 'khanhchung')
+      await createBlog(page, 'A new blog', 'John Smith', 'example.com')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await createBlog(page, 'A new blog', 'John Smith', 'example.com')
       await expect(page.getByText('A new blog by John Smith', { exact: true })).toBeVisible()
     })
 
     test('a blog can be liked', async ({ page }) => {
-      await createBlog(page, 'A new blog', 'John Smith', 'example.com')
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByText('0 likes', { exact: true })).toBeVisible()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('1 likes')).toBeVisible()
     })
 
-    test.only('only the user who added the blog can delete the blog', async ({ page }) => {
-      await createBlog(page, 'A new blog', 'John Smith', 'example.com')
+    test('only the user who added the blog can delete the blog', async ({ page }) => {
       await page.getByRole('button', { name: 'view' }).click()
       page.on('dialog', async dialog => {
         expect(dialog.message()).toContain('Remove A new blog by John Smith')
@@ -67,6 +82,13 @@ describe('Blog app', () => {
       })
       await page.getByRole('button', { name: 'remove' }).click()
       await expect(page.getByText('A new blog by John Smith', { exact: true })).not.toBeVisible()
+    })
+
+    test.only('only the user who added the blog sees its delete button', async ({ page }) => {
+      await page.getByRole('button', { name: 'logout' }).click()
+      await login(page, 'root', 'root')
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
   })
 })

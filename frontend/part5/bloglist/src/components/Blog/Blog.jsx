@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, onLike, onDelete }) => {
+const Blog = ({ blog, user, onLike, onDelete }) => {
   const [visiable, setVisible] = useState(false)
 
   const blogStyle = {
@@ -24,7 +24,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
           </button>
         </div>
         <div>{blog.user?.name}</div>
-        <button onClick={() => onDelete(blog)}>remove</button>
+        {blog.user.username === user.username ? <button onClick={() => onDelete(blog)}>remove</button> : null}
       </div>
       <button onClick={() => setVisible(!visiable)} className="show-details">
         {visiable ? 'hide' : 'view'}
