@@ -11,14 +11,22 @@ const App = () => {
     })
   }
 
+  const create = e => {
+    e.preventDefault()
+    const anecdote =  e.target.anecdote.value
+    e.target.anecdote.value = ''
+    dispatch({
+      type: 'ADD',
+      payload: { anecdote }
+    })
+  }
+
   return (
     <div>
       <h2>Anecdotes</h2>
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
+          <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
             <button onClick={() => vote(anecdote.id)}>vote</button>
@@ -26,8 +34,8 @@ const App = () => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
+      <form onSubmit={create}>
+        <div><input name="anecdote"/></div>
         <button>create</button>
       </form>
     </div>

@@ -33,6 +33,10 @@ const reducer = (state = initialState, action) => {
       }
       return state.map(s => s.id !== id ? s : updatedAnecdote)
     }
+    case 'ADD': {
+      const { anecdote } = action.payload
+      return state.concat(asObject(anecdote))
+    }
     default:
       return state
   }
