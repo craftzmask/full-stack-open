@@ -15,7 +15,7 @@ const AnecdoteList = () => {
   })
   const dispatch = useDispatch()
 
-  const voteAnecdote = (id) => {
+  const voteAnecdote = id => {
     dispatch(vote(id))
   }
 
