@@ -9,7 +9,8 @@ const AnecdoteForm = ({ notify }) => {
     onSuccess: newAnecdote => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
       notify(`${newAnecdote.content} added`)
-    }
+    },
+    onError: err => notify(err.response.data.error)
   })
 
   const onCreate = (event) => {

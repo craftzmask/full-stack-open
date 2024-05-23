@@ -28,7 +28,7 @@ const App = () => {
     notificationDispatch({ type: 'SET', payload: message })
     setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' })
-    }, 1000)
+    }, 5000)
   }
 
   return (
