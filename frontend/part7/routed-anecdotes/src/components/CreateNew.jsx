@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useField } from '../hooks/useField'
 
@@ -17,7 +16,12 @@ const CreateNew = (props) => {
       votes: 0
     })
     navigate('/')
+  }
 
+  const onReset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -36,7 +40,10 @@ const CreateNew = (props) => {
           url for more info
           <input name='info' {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button" onClick={onReset}>
+          reset
+        </button>
       </form>
     </div>
   )
