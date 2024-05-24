@@ -24,21 +24,26 @@ const CreateNew = (props) => {
     info.reset()
   }
 
+  const omit = (key, object) => {
+    const { [key]: _, ...rest } = object
+    return rest
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' {...content} />
+          <input name='content' {...omit('reset', content)} />
         </div>
         <div>
           author
-          <input name='author' {...author} />
+          <input name='author' {...omit('reset', author)} />
         </div>
         <div>
           url for more info
-          <input name='info' {...info} />
+          <input name='info' {...omit('reset', info)} />
         </div>
         <button type="submit">create</button>
         <button type="button" onClick={onReset}>
