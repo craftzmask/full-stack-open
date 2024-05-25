@@ -7,18 +7,14 @@ import NewBlogForm from "./components/NewBlogForm/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { useNotificationDispatch } from "./reducers/NotificationReducer";
+import { useQuery } from "@tanstack/react-query"
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const newBlogFormRef = useRef();
   const notificationDispatch = useNotificationDispatch()
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
 
   useEffect(() => {
     let user = localStorage.getItem("user");
@@ -28,6 +24,17 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
+
+  const result = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll
+  })
+
+  if (result.isLoading) {
+    return <div>loading...</div>
+  }
+
+  const blogs = result.data
 
   const login = async (e) => {
     e.preventDefault();
@@ -48,17 +55,6 @@ const App = () => {
   const logout = () => {
     localStorage.clear();
     setUser(null);
-  };
-
-  const createBlog = async (blog) => {
-    try {
-      const savedBlog = await blogService.create(blog);
-      setBlogs(blogs.concat(savedBlog));
-      newBlogFormRef.current.toggleVisibility();
-      notify(`${savedBlog.title} by ${savedBlog.author} added`, "success");
-    } catch (exception) {
-      notify(exception.response.data.error, "error");
-    }
   };
 
   const notify = (message, status) => {
@@ -115,7 +111,9 @@ const App = () => {
 
       <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
         <h2>create new</h2>
-        <NewBlogForm onSubmit={createBlog} />
+        <NewBlogForm
+          notify={notify}
+          newBlogFormRef={newBlogFormRef} />
       </Togglable>
 
       {[...blogs]
@@ -126,8 +124,7 @@ const App = () => {
             blog={blog}
             user={user}
             onLike={handleLikeClick}
-            onDelete={handleDeleteClick}
-          />
+            onDelete={handleDeleteClick} />
         ))}
     </div>
   );
