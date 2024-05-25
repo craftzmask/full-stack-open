@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog/Blog";
+import Blogs from "./components/Blogs";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import Users from "./components/Users";
 import { useNotificationDispatch } from "./reducers/NotificationReducer";
 import { useQuery } from "@tanstack/react-query"
 import UserContext from "./reducers/UserReducer";
+import { Route, Routes } from "react-router-dom";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -95,15 +98,10 @@ const App = () => {
           newBlogFormRef={newBlogFormRef} />
       </Togglable>
 
-      {[...blogs]
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            notify={notify} />
-        ))}
+      <Routes>
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={<Blogs blogs={blogs} user={user} notify={notify} />} />
+      </Routes>
     </div>
   );
 };
