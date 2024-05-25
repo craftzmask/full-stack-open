@@ -6,15 +6,15 @@ import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import { useNotificationDispatch } from "./reducers/NotificationReducer";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [status, setStatus] = useState(null);
   const newBlogFormRef = useRef();
+  const notificationDispatch = useNotificationDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -62,11 +62,9 @@ const App = () => {
   };
 
   const notify = (message, status) => {
-    setMessage(message);
-    setStatus(status);
+    notificationDispatch({ type: "SET", payload: { message, status } })
     setTimeout(() => {
-      setMessage(null);
-      setStatus(null);
+      notificationDispatch({ type: "CLEAR" })
     }, 5000);
   };
 
@@ -95,7 +93,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification message={message} status={status} />
+        <Notification />
         <LoginForm
           username={username}
           onUsernameChange={(e) => setUsername(e.target.value)}
@@ -110,7 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} status={status} />
+      <Notification />
       <p>
         {user.name} logged in <button onClick={logout}>logout</button>
       </p>
