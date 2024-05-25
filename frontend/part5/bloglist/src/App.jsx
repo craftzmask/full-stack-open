@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -8,11 +8,12 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { useNotificationDispatch } from "./reducers/NotificationReducer";
 import { useQuery } from "@tanstack/react-query"
+import UserContext from "./reducers/UserReducer";
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, userDispatch] = useContext(UserContext)
   const newBlogFormRef = useRef();
   const notificationDispatch = useNotificationDispatch()
 
@@ -20,10 +21,10 @@ const App = () => {
     let user = localStorage.getItem("user");
     if (user) {
       user = JSON.parse(user);
-      setUser(user);
+      userDispatch({ type: "SET", payload: user })
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [userDispatch]);
 
   const result = useQuery({
     queryKey: ["blogs"],
@@ -41,11 +42,10 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
+      userDispatch({ type: "SET", payload: user })
       blogService.setToken(user.token);
       setUsername("");
       setPassword("");
-
       notify("logged in successful", "success");
     } catch (error) {
       notify(error.response.data.error, "error");
@@ -54,7 +54,7 @@ const App = () => {
 
   const logout = () => {
     localStorage.clear();
-    setUser(null);
+    userDispatch({ type: "CLEAR" })
   };
 
   const notify = (message, status) => {
@@ -62,27 +62,6 @@ const App = () => {
     setTimeout(() => {
       notificationDispatch({ type: "CLEAR" })
     }, 5000);
-  };
-
-  const handleLikeClick = async (blog) => {
-    const updated = await blogService.update(blog.id, {
-      ...blog,
-      user: blog.user.id,
-      likes: blog.likes + 1,
-    });
-
-    setBlogs(blogs.map((b) => (b.id !== updated.id ? b : updated)));
-  };
-
-  const handleDeleteClick = async (blog) => {
-    if (confirm(`Remove ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.remove(blog.id);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
-      } catch (exception) {
-        notify(exception.response.data.error, "error");
-      }
-    }
   };
 
   if (!user) {
@@ -123,8 +102,7 @@ const App = () => {
             key={blog.id}
             blog={blog}
             user={user}
-            onLike={handleLikeClick}
-            onDelete={handleDeleteClick} />
+            notify={notify} />
         ))}
     </div>
   );

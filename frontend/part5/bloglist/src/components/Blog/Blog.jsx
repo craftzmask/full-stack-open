@@ -1,8 +1,27 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import blogService from "../../services/blogs"
 
-const Blog = ({ blog, user, onLike, onDelete }) => {
+const Blog = ({ blog, user, notify }) => {
   const [visiable, setVisible] = useState(false);
+  const queryClient = useQueryClient()
+
+  const likeBlogMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: (updatedBlog) => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      notify(`${updatedBlog.title} by ${updatedBlog.author} liked`, "success");
+    },
+  })
+
+  const removeBlogMutation = useMutation({
+    mutationFn: blogService.remove,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      notify(`${blog.title} by ${blog.author} removed`, "success");
+    },
+  })
 
   const blogStyle = {
     paddingTop: 10,
@@ -11,6 +30,18 @@ const Blog = ({ blog, user, onLike, onDelete }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const like = () => {
+    likeBlogMutation.mutate({
+      ...blog,
+      user: blog.user.id,
+      likes: blog.likes + 1
+    })
+  }
+
+  const remove = () => {
+    removeBlogMutation.mutate(blog.id)
+  }
 
   return (
     <div style={blogStyle} className="blog">
@@ -21,13 +52,13 @@ const Blog = ({ blog, user, onLike, onDelete }) => {
         <div>{blog.url}</div>
         <div>
           <span data-testid="likes">{blog.likes} likes</span>
-          <button onClick={() => onLike(blog)} className="like">
+          <button onClick={like} className="like">
             likes
           </button>
         </div>
         <div>{blog.user?.name}</div>
         {blog.user.username === user.username ? (
-          <button onClick={() => onDelete(blog)}>remove</button>
+          <button onClick={remove}>remove</button>
         ) : null}
       </div>
       <button onClick={() => setVisible(!visiable)} className="show-details">
@@ -39,8 +70,7 @@ const Blog = ({ blog, user, onLike, onDelete }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  onLike: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired
 };
 
 export default Blog;
