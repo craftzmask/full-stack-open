@@ -1,21 +1,25 @@
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
 const LoginForm = ({
-  username, onUsernameChange,
-  password, onPasswordChange,
-  onSubmit
+  username,
+  onUsernameChange,
+  password,
+  onPasswordChange,
+  onSubmit,
 }) => {
   return (
     <form onSubmit={onSubmit}>
       <div>
-        username <input
+        username{" "}
+        <input
           data-testid="username"
           value={username}
           onChange={onUsernameChange}
         />
       </div>
       <div>
-        password <input
+        password{" "}
+        <input
           data-testid="password"
           type="password"
           value={password}
@@ -24,15 +28,15 @@ const LoginForm = ({
       </div>
       <button type="submit">login</button>
     </form>
-  )
-}
+  );
+};
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onUsernameChange: PropTypes.func.isRequired,
   onPasswordChange: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
-}
+  password: PropTypes.string.isRequired,
+};
 
-export default LoginForm
+export default LoginForm;

@@ -1,53 +1,53 @@
-import { render } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import Blog from './Blog'
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Blog from "./Blog";
 
-describe('<Blog />', () => {
-  let container = null
-  const like = vi.fn()
-  const remove = vi.fn()
-  const submit = vi.fn()
-  const user = userEvent.setup()
+describe("<Blog />", () => {
+  let container = null;
+  const like = vi.fn();
+  const remove = vi.fn();
+  const submit = vi.fn();
+  const user = userEvent.setup();
 
   beforeEach(() => {
     const blog = {
-      title: 'Hello World',
-      author: 'John Wick',
+      title: "Hello World",
+      author: "John Wick",
       likes: 10,
-      url: 'example.com',
+      url: "example.com",
       user: {
-        username: 'mikeswit',
-        name: 'Mike Swit',
-      }
-    }
+        username: "mikeswit",
+        name: "Mike Swit",
+      },
+    };
     container = render(
-      <Blog blog={blog} onLike={like} onDelete={remove} />
-    ).container
-  })
+      <Blog blog={blog} onLike={like} onDelete={remove} />,
+    ).container;
+  });
 
-  test('shows title and author, but not its URL or likes by default.', () => {
-    const div = container.querySelector('.blog')
-    expect(div).toHaveTextContent('Hello World John Wick')
+  test("shows title and author, but not its URL or likes by default.", () => {
+    const div = container.querySelector(".blog");
+    expect(div).toHaveTextContent("Hello World John Wick");
 
-    const blogDetails = container.querySelector('.blog-details')
-    expect(blogDetails).toHaveStyle('display: none')
-  })
+    const blogDetails = container.querySelector(".blog-details");
+    expect(blogDetails).toHaveStyle("display: none");
+  });
 
-  test('click show button to view its details', async () => {
-    const showButton = container.querySelector('.show-details')
-    await user.click(showButton)
-    const blogDetails = container.querySelector('.blog-details')
-    expect(blogDetails).toHaveStyle('display: block')
-    expect(showButton).toHaveTextContent('hide')
-  })
+  test("click show button to view its details", async () => {
+    const showButton = container.querySelector(".show-details");
+    await user.click(showButton);
+    const blogDetails = container.querySelector(".blog-details");
+    expect(blogDetails).toHaveStyle("display: block");
+    expect(showButton).toHaveTextContent("hide");
+  });
 
-  test('like button clicked twice', async () => {
-    const showButton = container.querySelector('.show-details')
-    await user.click(showButton)
-    const likeButton = container.querySelector('.like')
-    await user.click(likeButton)
-    await user.click(likeButton)
+  test("like button clicked twice", async () => {
+    const showButton = container.querySelector(".show-details");
+    await user.click(showButton);
+    const likeButton = container.querySelector(".like");
+    await user.click(likeButton);
+    await user.click(likeButton);
 
-    expect(like.mock.calls).toHaveLength(2)
-  })
-})
+    expect(like.mock.calls).toHaveLength(2);
+  });
+});
