@@ -8,10 +8,11 @@ import NewBlogForm from "./components/NewBlogForm/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import Users from "./components/Users";
+import User from "./components/User";
 import { useNotificationDispatch } from "./reducers/NotificationReducer";
 import { useQuery } from "@tanstack/react-query"
 import UserContext from "./reducers/UserReducer";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useMatch } from "react-router-dom";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -100,6 +101,7 @@ const App = () => {
 
       <Routes>
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User />} />
         <Route path="/" element={<Blogs blogs={blogs} user={user} notify={notify} />} />
       </Routes>
     </div>
