@@ -20,6 +20,7 @@ const App = () => {
   const [user, userDispatch] = useContext(UserContext)
   const newBlogFormRef = useRef();
   const notificationDispatch = useNotificationDispatch()
+  const blogMatch = useMatch("/blogs/:id")
 
   useEffect(() => {
     let user = localStorage.getItem("user");
@@ -40,6 +41,10 @@ const App = () => {
   }
 
   const blogs = result.data
+
+  const blog = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
+    : null
 
   const login = async (e) => {
     e.preventDefault();
@@ -103,6 +108,7 @@ const App = () => {
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/" element={<Blogs blogs={blogs} user={user} notify={notify} />} />
+        <Route path="/blogs/:id" element={<Blog blog={blog} user={user} notify={notify} />} />
       </Routes>
     </div>
   );

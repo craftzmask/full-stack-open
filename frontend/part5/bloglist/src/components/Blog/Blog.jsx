@@ -1,10 +1,8 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../../services/blogs"
 
 const Blog = ({ blog, user, notify }) => {
-  const [visiable, setVisible] = useState(false);
   const queryClient = useQueryClient()
 
   const likeBlogMutation = useMutation({
@@ -23,14 +21,6 @@ const Blog = ({ blog, user, notify }) => {
     },
   })
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   const like = () => {
     likeBlogMutation.mutate({
       ...blog,
@@ -43,33 +33,29 @@ const Blog = ({ blog, user, notify }) => {
     removeBlogMutation.mutate(blog.id)
   }
 
+  if (!blog) return null
+
   return (
-    <div style={blogStyle} className="blog">
-      <span>
-        {blog.title} by {blog.author}
-      </span>
-      <div style={{ display: visiable ? "" : "none" }} className="blog-details">
-        <div>{blog.url}</div>
-        <div>
-          <span data-testid="likes">{blog.likes} likes</span>
-          <button onClick={like} className="like">
-            likes
-          </button>
-        </div>
-        <div>{blog.user?.name}</div>
-        {blog.user.username === user.username ? (
-          <button onClick={remove}>remove</button>
-        ) : null}
+    <div className="blog">
+      <h2>{blog.title} by {blog.author}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <div>
+        <span data-testid="likes">{blog.likes} likes</span>
+        <button onClick={like} className="like">likes</button>
       </div>
-      <button onClick={() => setVisible(!visiable)} className="show-details">
-        {visiable ? "hide" : "view"}
-      </button>
+      <div>added by {blog.user.name}</div>
+
+      <div>
+        {blog.user.username === user.username
+          ? <button onClick={remove}>remove</button>
+          : null
+        }
+      </div>
     </div>
   );
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
   notify: PropTypes.func.isRequired
 };
 
