@@ -15,6 +15,20 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  console.log(request.body)
+  const comment = new Comment({
+    content: request.body.content,
+    blogId: blog._id
+  })
+  const savedComment = await comment.save()
+  blog.comments.push(savedComment)
+  await blog.save()
+
+  response.json(savedComment)
+})
+
 blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   if (!(body.title && body.url)) {
@@ -39,19 +53,6 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   savedBlog = await Blog.findById(savedBlog._id).populate('user')
 
   response.status(201).json(savedBlog)
-})
-
-blogsRouter.post('/:id/comments', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
-  const comment = new Comment({
-    content: request.body.content,
-    blogId: blog._id
-  })
-  const savedComment = await comment.save()
-  blog.comments.push(savedComment)
-  await blog.save()
-
-  response.json(savedComment)
 })
 
 blogsRouter.put('/:id', async (request, response) => {

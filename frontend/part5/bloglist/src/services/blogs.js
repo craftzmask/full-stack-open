@@ -29,4 +29,11 @@ const remove = (id) => {
   return axios.delete(`${baseUrl}/${id}`, config);
 };
 
-export default { setToken, getAll, update, create, remove };
+const addComment = (id, comment) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  return axios.post(`${baseUrl}/${id}/comments`, comment, config).then(res => res.data);
+}
+
+export default { setToken, getAll, update, create, remove, addComment };

@@ -21,6 +21,13 @@ const Blog = ({ blog, user, notify }) => {
     },
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: ({ id, comment }) => blogService.addComment(id, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] })
+    }
+  })
+
   const like = () => {
     likeBlogMutation.mutate({
       ...blog,
@@ -31,6 +38,15 @@ const Blog = ({ blog, user, notify }) => {
 
   const remove = () => {
     removeBlogMutation.mutate(blog.id)
+  }
+
+  const addComment = e => {
+    e.preventDefault()
+    addCommentMutation.mutate({
+      id: blog.id,
+      comment: { content: e.target.comment.value }
+    })
+    e.target.comment.value = ""
   }
 
   if (!blog) return null
@@ -53,12 +69,22 @@ const Blog = ({ blog, user, notify }) => {
       </div>
 
       <h3>comments</h3>
+      <NewComment onSubmit={addComment} />
       <ul>
         {blog.comments.map(c => <li key={c.id}>{c.content}</li>)}
       </ul>
     </div>
   );
 };
+
+const NewComment = ({ onSubmit }) => {
+  return (
+    <form onSubmit={onSubmit}>
+      <input name="comment" />
+      <button>add comment</button>
+    </form>
+  )
+}
 
 Blog.propTypes = {
   notify: PropTypes.func.isRequired
