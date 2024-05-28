@@ -51,6 +51,11 @@ const Blog = ({ blog, user, notify }) => {
           : null
         }
       </div>
+
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(c => <li key={c.id}>{c.content}</li>)}
+      </ul>
     </div>
   );
 };

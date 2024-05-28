@@ -12,7 +12,7 @@ import User from "./components/User";
 import { useNotificationDispatch } from "./reducers/NotificationReducer";
 import { useQuery } from "@tanstack/react-query"
 import UserContext from "./reducers/UserReducer";
-import { Route, Routes, useMatch } from "react-router-dom";
+import { Route, Routes, useMatch, Link } from "react-router-dom";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -89,13 +89,21 @@ const App = () => {
     );
   }
 
+  const style  = {
+    marginRight: 10
+  }
+
   return (
     <div>
+      <div style={{ backgroundColor: "#b1bab3", padding: 10 }}>
+        <Link style={style} to="/">blogs</Link>
+        <Link style={style} to="/users">users</Link>
+        <span>
+          {user.name} logged in <button onClick={logout}>logout</button>
+        </span>
+      </div>
       <h2>blogs</h2>
       <Notification />
-      <p>
-        {user.name} logged in <button onClick={logout}>logout</button>
-      </p>
 
       <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
         <h2>create new</h2>

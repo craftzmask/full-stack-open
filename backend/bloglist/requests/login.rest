@@ -5,3 +5,12 @@ Content-Type: application/json
   "username": "khanhchung",
   "password": "khanhchung"
 }
+
+###
+post http://localhost:3003/api/blogs/66554a1995bed3d4c9e1e607/comments
+Content-Type: application/json
+Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtoYW5oY2h1bmciLCJpZCI6IjY2MmRlN2YyM2NlNTAxOWQzOGZkYjM3MiIsImlhdCI6MTcxNjg2NjE0Nn0.lSm9vh6K1RtQpwL_YbkJctkbgjBOQbVxrBE12PpYb0Q"
+
+{
+  "content": "This is a comment"
+}
