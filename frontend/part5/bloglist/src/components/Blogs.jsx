@@ -1,25 +1,23 @@
+import React from "react";
 import { Link } from "react-router-dom";
+import { List } from "antd";
 
-const Blogs = ({ blogs, user, notify }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
+const Blogs = ({ blogs, notify }) => {
   return (
-    <div>
-      {[...blogs]
-        .sort((a, b) => b.likes - a.likes)
-        .map(b =>
-          <div style={blogStyle} key={b.id}>
-            <Link to={`/blogs/${b.id}`}>{b.title}</Link>
-          </div>
-        )
-      }
-    </div>
+    <List
+      itemLayout="vertical"
+      size="large"
+      dataSource={blogs}
+      renderItem={(item) => (
+        <List.Item key={item.id}>
+          <List.Item.Meta
+            title={<Link to={`/blogs/${item.id}`}>{item.title}</Link>}
+            description={`by ${item.author}`}
+          />
+        </List.Item>
+      )}
+    >
+    </List>
   )
 }
 

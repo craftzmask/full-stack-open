@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog/Blog";
 import Blogs from "./components/Blogs";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm/NewBlogForm";
 import Notification from "./components/Notification";
@@ -13,10 +12,11 @@ import { useNotificationDispatch } from "./reducers/NotificationReducer";
 import { useQuery } from "@tanstack/react-query"
 import UserContext from "./reducers/UserReducer";
 import { Route, Routes, useMatch, Link } from "react-router-dom";
+import { Layout, Button } from "antd";
+
+const { Header, Content } = Layout;
 
 const App = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, userDispatch] = useContext(UserContext)
   const newBlogFormRef = useRef();
   const notificationDispatch = useNotificationDispatch()
@@ -46,21 +46,6 @@ const App = () => {
     ? blogs.find(b => b.id === blogMatch.params.id)
     : null
 
-  const login = async (e) => {
-    e.preventDefault();
-    try {
-      const user = await loginService.login({ username, password });
-      localStorage.setItem("user", JSON.stringify(user));
-      userDispatch({ type: "SET", payload: user })
-      blogService.setToken(user.token);
-      setUsername("");
-      setPassword("");
-      notify("logged in successful", "success");
-    } catch (error) {
-      notify(error.response.data.error, "error");
-    }
-  };
-
   const logout = () => {
     localStorage.clear();
     userDispatch({ type: "CLEAR" })
@@ -75,17 +60,18 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
-        <h2>log in to application</h2>
+      <Content style={{
+        height: "60vh",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
+        <h2>Log in to Application</h2>
         <Notification />
-        <LoginForm
-          username={username}
-          onUsernameChange={(e) => setUsername(e.target.value)}
-          password={password}
-          onPasswordChange={(e) => setPassword(e.target.value)}
-          onSubmit={login}
-        />
-      </div>
+        <LoginForm notify={notify} />
+      </Content>
     );
   }
 
@@ -94,31 +80,33 @@ const App = () => {
   }
 
   return (
-    <div>
-      <div style={{ backgroundColor: "#b1bab3", padding: 10 }}>
+    <Layout>
+      <Header style={{ backgroundColor: "#b1bab3" }}>
         <Link style={style} to="/">blogs</Link>
         <Link style={style} to="/users">users</Link>
         <span>
-          {user.name} logged in <button onClick={logout}>logout</button>
+          {user.name} logged in <Button type="primary" danger onClick={logout}>Logout</Button>
         </span>
-      </div>
-      <h2>blogs</h2>
-      <Notification />
+      </Header>
+      <Content style={{ padding: "0 48px" }}>
+        <h2>blogs</h2>
+        <Notification />
 
-      <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
-        <h2>create new</h2>
-        <NewBlogForm
-          notify={notify}
-          newBlogFormRef={newBlogFormRef} />
-      </Togglable>
+        <Togglable buttonLabel="New Blog" ref={newBlogFormRef}>
+          <h2>create new</h2>
+          <NewBlogForm
+            notify={notify}
+            newBlogFormRef={newBlogFormRef} />
+        </Togglable>
 
-      <Routes>
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/" element={<Blogs blogs={blogs} user={user} notify={notify} />} />
-        <Route path="/blogs/:id" element={<Blog blog={blog} user={user} notify={notify} />} />
-      </Routes>
-    </div>
+        <Routes>
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/" element={<Blogs blogs={blogs} user={user} notify={notify} />} />
+          <Route path="/blogs/:id" element={<Blog blog={blog} user={user} notify={notify} />} />
+        </Routes>
+      </Content>
+    </Layout>
   );
 };
 

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import blogService from "../../services/blogs"
+import blogService from "../../services/blogs";
+import { Button, Form, Input } from "antd";
 
 const Blog = ({ blog, user, notify }) => {
   const queryClient = useQueryClient()
@@ -40,13 +41,13 @@ const Blog = ({ blog, user, notify }) => {
     removeBlogMutation.mutate(blog.id)
   }
 
-  const addComment = e => {
-    e.preventDefault()
+  const addComment = values => {
+    const { comment } = values
+    console.log(comment)
     addCommentMutation.mutate({
       id: blog.id,
-      comment: { content: e.target.comment.value }
+      comment: { content: comment }
     })
-    e.target.comment.value = ""
   }
 
   if (!blog) return null
@@ -56,14 +57,16 @@ const Blog = ({ blog, user, notify }) => {
       <h2>{blog.title} by {blog.author}</h2>
       <a href={blog.url}>{blog.url}</a>
       <div>
-        <span data-testid="likes">{blog.likes} likes</span>
-        <button onClick={like} className="like">likes</button>
+        <span data-testid="likes">{blog.likes} likes</span>{" "}
+        <Button type="primary" onClick={like} className="like">
+          likes
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
 
       <div>
         {blog.user.username === user.username
-          ? <button onClick={remove}>remove</button>
+          ? <Button danger onClick={remove}>remove</Button>
           : null
         }
       </div>
@@ -79,10 +82,20 @@ const Blog = ({ blog, user, notify }) => {
 
 const NewComment = ({ onSubmit }) => {
   return (
-    <form onSubmit={onSubmit}>
-      <input name="comment" />
-      <button>add comment</button>
-    </form>
+    <Form style={{ maxWidth: 300 }} onFinish={onSubmit}>
+      <Form.Item
+        name="comment"
+        rules={[
+          {
+            required: true,
+            message: "Please input your comment!"
+          }
+        ]}
+      >
+        <Input placeholder="Comment" />
+      </Form.Item>
+      <Button htmlType="submit">add comment</Button>
+    </Form>
   )
 }
 
